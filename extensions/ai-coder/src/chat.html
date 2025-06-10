@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat</title>
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'none';
+  img-src https: vscode-resource:; 
+  script-src 'unsafe-eval' 'unsafe-inline' vscode-resource: https://*.vscode-cdn.net; 
+  style-src 'unsafe-inline' vscode-resource:; 
+  connect-src 'self' http://127.0.0.1:8000 https://*.vscode-cdn.net https://jarvis-code-dev.chakrachain.io https://jarvis-code-test.chakrachain.io https://jarvis-code-devnet.chakrachain.io vscode-webview-resource:;">
+  <style>
+    /* Basic styles to ensure the page fills the entire container */
+    html,
+    body,
+    #root {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <!-- Script tags will be dynamically inserted by extension.ts -->
+</body>
+
+</html>

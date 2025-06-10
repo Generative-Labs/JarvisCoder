@@ -1,0 +1,38 @@
+.thinking-content {
+  line-height: 1.3 !important;
+}
+
+.common-text {
+  line-height: 1.3 !important;
+}
+
+.thinking-content p {
+  white-space: pre-line !important;
+  line-height: 1.3 !important;
+}
+
+.text-block-wrapper p {
+  white-space: pre-line !important;
+  /* line-height: 1.3 !important; */
+}
+
+/* todo config font size with vscode */
+/* .text-block-wrapper {
+  font-family: var(--vscode-editor-font-family);
+  font-size: var(--vscode-editor-font-size);
+} */
+.code-block-wrapper {
+  position: relative;
+  /* margin: 16px 0; */
+  /* min-width: 400px; */
+}
+.code-block-wrapper :first-child {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.code-block-wrapper code {
+  background-color: transparent !important;
+}

@@ -10,6 +10,7 @@ const dirs = [
 	'',
 	'build',
 	'extensions',
+	'extensions/ai-coder',
 	'extensions/configuration-editing',
 	'extensions/css-language-features',
 	'extensions/css-language-features/server',
