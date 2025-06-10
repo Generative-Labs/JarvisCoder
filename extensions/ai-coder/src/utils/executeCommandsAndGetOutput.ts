@@ -1,10 +1,15 @@
-import * as vscode from "vscode";
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import * as vscode from 'vscode';
 
 /**
  * Executes commands in a VS Code terminal and captures the output
- * @param {string} commands - The commands to execute in the terminal
- * @param {vscode.Terminal} terminal - The VS Code terminal instance to use for command execution
- * @returns {Promise<void>} A promise that resolves when the command is sent to the terminal
+ * @param commands - The commands to execute in the terminal
+ * @param terminal - The VS Code terminal instance to use for command execution
+ * @returns A promise that resolves when the command is sent to the terminal
  *
  * @description
  * This function sends the provided commands to the specified VS Code terminal.
@@ -18,10 +23,10 @@ import * as vscode from "vscode";
  * ```
  */
 export async function executeCommandsAndGetOutput(
-  commands: string,
-  terminal: vscode.Terminal
+	commands: string,
+	terminal: vscode.Terminal,
 ): Promise<void> {
-  terminal.sendText(commands, true); // Send command and ensure it executes (addNewLine = true)
+	terminal.sendText(commands, true); // Send command and ensure it executes (addNewLine = true)
 }
 
 // Helper function to poll for a marker in a file

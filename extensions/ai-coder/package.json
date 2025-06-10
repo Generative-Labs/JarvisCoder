@@ -7,13 +7,9 @@
   "engines": {
     "vscode": "^1.99.0"
   },
-  "categories": [
-    "Other"
-  ],
+  "categories": ["Other"],
   "main": "./out/extension",
-  "activationEvents": [
-    "*"
-  ],
+  "activationEvents": ["*"],
   "contributes": {
     "keybindings": [
       {
@@ -142,11 +138,15 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,md}\"",
     "clean": "rm -rf out dist",
     "build": "npm run clean && npm run compile",
     "rebuild": "npm run clean && npm run compile && code --disable-extension ai-training && code",
     "test": "vscode-test",
-    "build-package": "vsce package"
+    "build-package": "vsce package",
+    "fix-all": "npm run format && npm run lint:fix"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
@@ -164,6 +164,9 @@
     "@types/vscode": "^1.99.1",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
+    "@stylistic/eslint-plugin-ts": "^2.12.1",
+    "eslint-plugin-header": "3.1.1",
+    "eslint-plugin-jsdoc": "^50.3.1",
     "@vscode/test-cli": "^0.0.10",
     "ajv": "^8.17.1",
     "autoprefixer": "^10.4.21",

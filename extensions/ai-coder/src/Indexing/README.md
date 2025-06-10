@@ -1,6 +1,8 @@
 # Code Indexing System
 
-The Code Indexing system provides contextual code indexing for the AI Training VS Code extension. It tracks files in the workspace, resolves imports, and provides relevant code context to the LLM for improved interactions.
+The Code Indexing system provides contextual code indexing for the AI Training VS Code extension. It
+tracks files in the workspace, resolves imports, and provides relevant code context to the LLM for
+improved interactions.
 
 ## Architecture
 
@@ -8,12 +10,14 @@ The system follows a clear separation of concerns with these main components:
 
 ### Public API
 
-- **CodeIndexing**: The main public API class that external code should interact with. It coordinates between the file tracking and backend communication components.
+- **CodeIndexing**: The main public API class that external code should interact with. It
+  coordinates between the file tracking and backend communication components.
 
 ### Implementation Details
 
 - **FileTracker**: Maintains MD5 hashes of files in the codebase and tracks changes to those files.
-- **ImportResolver**: Resolves imports in different programming languages (JavaScript/TypeScript, Python, Solidity).
+- **ImportResolver**: Resolves imports in different programming languages (JavaScript/TypeScript,
+  Python, Solidity).
 - **FileMetadataStore**: Handles persistence of file metadata.
 
 ## Features
@@ -53,7 +57,6 @@ const context = await codeIndexing.getCodeContextForActiveEditor();
 
 // Get context for a specific file
 const fileContext = await codeIndexing.getCodeContextForFile('/path/to/file.js');
-
 ```
 
 ### Syncing with Backend
@@ -71,14 +74,14 @@ The main data structure for providing context to the LLM:
 
 ```typescript
 interface CodeFileContext {
-  // The primary file that the user is working with
-  primaryFile: CodeFile;
-  
-  // Files that are imported by the primary file
-  importedFiles: CodeFile[];
-  
-  // Optional selection range in the primary file
-  selection?: vscode.Range;
+	// The primary file that the user is working with
+	primaryFile: CodeFile;
+
+	// Files that are imported by the primary file
+	importedFiles: CodeFile[];
+
+	// Optional selection range in the primary file
+	selection?: vscode.Range;
 }
 ```
 
@@ -88,17 +91,17 @@ Represents a code file with its path and content:
 
 ```typescript
 interface CodeFile {
-  // Absolute path to the file
-  path: string;
-  
-  // Relative path (from workspace root)
-  relativePath: string;
-  
-  // Content of the file
-  content: string;
-  
-  // Language ID of the file (e.g., 'typescript', 'python', 'solidity')
-  languageId: string;
+	// Absolute path to the file
+	path: string;
+
+	// Relative path (from workspace root)
+	relativePath: string;
+
+	// Content of the file
+	content: string;
+
+	// Language ID of the file (e.g., 'typescript', 'python', 'solidity')
+	languageId: string;
 }
 ```
 
@@ -117,12 +120,14 @@ npm run test
 ## Core Components
 
 ### FileTracker
+
 - Tracks file changes using MD5 hashes
 - Integrates with GitignoreHandler for intelligent file filtering
 - Provides efficient file watching with debouncing
 - Maintains sync state with timestamps
 
 ### GitignoreHandler
+
 - Parses .gitignore files in workspace folders
 - Supports all standard gitignore patterns:
   - Simple patterns: `*.log`, `temp.txt`
@@ -134,11 +139,13 @@ npm run test
 - Cross-platform path handling
 
 ### CodeIndexing
+
 - High-level interface for file indexing
 - Manages FileTracker lifecycle
 - Provides event-driven file change notifications
 
 ### FileMetadataStore
+
 - Persistent storage for file metadata
 - Workspace-aware storage keys
 - Efficient querying and updates
@@ -148,6 +155,7 @@ npm run test
 The GitignoreHandler supports the following pattern types:
 
 ### Basic Patterns
+
 ```gitignore
 # Comments are ignored
 *.log          # Matches all .log files
@@ -156,6 +164,7 @@ node_modules   # Matches directory name anywhere
 ```
 
 ### Directory Patterns
+
 ```gitignore
 build/         # Matches build directory
 /dist/         # Matches dist directory at root only
@@ -163,6 +172,7 @@ src/**/test/   # Matches test directories under src
 ```
 
 ### Advanced Patterns
+
 ```gitignore
 *.{js,ts}      # Multiple extensions
 **/*.test.*    # Test files at any depth
@@ -175,15 +185,15 @@ File patterns are configured in `filePatterns.ts`:
 
 ```typescript
 export const SOURCE_FILE_PATTERNS = [
-  '**/*.{sol,ts,tsx,js,jsx,py,toml,gitmodules}',
-  // Add more patterns as needed
+	'**/*.{sol,ts,tsx,js,jsx,py,toml,gitmodules}',
+	// Add more patterns as needed
 ];
 
 export const EXCLUDED_DIRECTORIES = [
-  '**/node_modules/**',
-  '**/.git/**',
-  '**/dist/**',
-  // These are combined with .gitignore patterns
+	'**/node_modules/**',
+	'**/.git/**',
+	'**/dist/**',
+	// These are combined with .gitignore patterns
 ];
 ```
 
@@ -206,22 +216,22 @@ export const EXCLUDED_DIRECTORIES = [
 ```typescript
 // In your extension's activate function
 export async function activate(context: vscode.ExtensionContext) {
-  try {
-    const codeIndexing = new CodeIndexing(context);
-    await codeIndexing.initialize();
-    
-    // File changes are now automatically filtered by .gitignore
-    codeIndexing.onFileChanged(async (changedFiles) => {
-      for (const file of changedFiles) {
-        console.log(`Processing: ${file.path}`);
-        // Process only files that pass gitignore filtering
-      }
-    });
-    
-    context.subscriptions.push(codeIndexing);
-  } catch (error) {
-    console.error('Failed to initialize code indexing:', error);
-  }
+	try {
+		const codeIndexing = new CodeIndexing(context);
+		await codeIndexing.initialize();
+
+		// File changes are now automatically filtered by .gitignore
+		codeIndexing.onFileChanged(async (changedFiles) => {
+			for (const file of changedFiles) {
+				console.log(`Processing: ${file.path}`);
+				// Process only files that pass gitignore filtering
+			}
+		});
+
+		context.subscriptions.push(codeIndexing);
+	} catch (error) {
+		console.error('Failed to initialize code indexing:', error);
+	}
 }
 ```
 
@@ -238,4 +248,5 @@ console.log('Loaded gitignore patterns:', patterns);
 // Look for: "File path/to/file matches gitignore pattern: pattern"
 ```
 
-This module provides a robust foundation for file tracking in VSCode extensions while respecting developer workflows through comprehensive gitignore support.
+This module provides a robust foundation for file tracking in VSCode extensions while respecting
+developer workflows through comprehensive gitignore support.

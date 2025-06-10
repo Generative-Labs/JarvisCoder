@@ -26,7 +26,6 @@ module.exports.all = [
 	'!out*/**',
 	'!test/**/out/**',
 	'!**/node_modules/**',
-	'!extensions/ai-coder/**',
 ];
 
 module.exports.unicodeFilter = [

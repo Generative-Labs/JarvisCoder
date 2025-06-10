@@ -2,7 +2,8 @@
 
 ## 🎯 Design Goals
 
-Refactor the huge original switch case into an elegant **dispatch & handler pattern**, supporting middleware mechanism to achieve separation of concerns and extensibility.
+Refactor the huge original switch case into an elegant **dispatch & handler pattern**, supporting
+middleware mechanism to achieve separation of concerns and extensibility.
 
 ## 🏗️ Architecture Overview
 
@@ -45,9 +46,9 @@ Core class responsible for message dispatching and middleware execution:
 
 ```typescript
 const dispatcher = new MessageDispatcher({
-  enableMiddlewares: true,
-  logUnhandledMessages: true,
-  timeout: 30000,
+	enableMiddlewares: true,
+	logUnhandledMessages: true,
+	timeout: 30000,
 });
 
 // Register middleware
@@ -66,7 +67,7 @@ Each specific message handler implements this interface:
 
 ```typescript
 interface MessageHandler {
-  handle(data: MessageData, context: MessageContext): Promise<void>;
+	handle(data: MessageData, context: MessageContext): Promise<void>;
 }
 ```
 
@@ -76,9 +77,9 @@ Middleware can insert logic before and after handler execution:
 
 ```typescript
 type Middleware = (
-  data: MessageData,
-  context: MessageContext,
-  next: () => Promise<void>,
+	data: MessageData,
+	context: MessageContext,
+	next: () => Promise<void>,
 ) => Promise<void>;
 ```
 
@@ -102,27 +103,27 @@ Automatically adds tracking for all webview messages:
 
 ```typescript
 export const createTelemetryMiddleware = (): Middleware => {
-  return async (data, context, next) => {
-    const startTime = Date.now();
+	return async (data, context, next) => {
+		const startTime = Date.now();
 
-    try {
-      await next(); // Execute handler
+		try {
+			await next(); // Execute handler
 
-      // Success tracking
-      await trackMessageEvent(data, context, {
-        success: true,
-        duration: Date.now() - startTime,
-      });
-    } catch (error) {
-      // Error tracking
-      await trackMessageEvent(data, context, {
-        success: false,
-        duration: Date.now() - startTime,
-        error: error.message,
-      });
-      throw error;
-    }
-  };
+			// Success tracking
+			await trackMessageEvent(data, context, {
+				success: true,
+				duration: Date.now() - startTime,
+			});
+		} catch (error) {
+			// Error tracking
+			await trackMessageEvent(data, context, {
+				success: false,
+				duration: Date.now() - startTime,
+				error: error.message,
+			});
+			throw error;
+		}
+	};
 };
 ```
 
@@ -159,15 +160,15 @@ export const createTelemetryMiddleware = (): Middleware => {
 ```typescript
 // 1. Create handler
 export class NewFeatureHandler implements MessageHandler {
-  async handle(data: MessageData, context: MessageContext): Promise<void> {
-    // Handle logic
-  }
+	async handle(data: MessageData, context: MessageContext): Promise<void> {
+		// Handle logic
+	}
 }
 
 // 2. Register in factory function
 dispatcher.registerMany({
-  [EventMessage.NEW_FEATURE]: new NewFeatureHandler(),
-  // ... other handlers
+	[EventMessage.NEW_FEATURE]: new NewFeatureHandler(),
+	// ... other handlers
 });
 ```
 
@@ -176,11 +177,11 @@ dispatcher.registerMany({
 ```typescript
 // 1. Create middleware
 export const createLoggingMiddleware = (): Middleware => {
-  return async (data, context, next) => {
-    console.log(`Processing: ${data.type}`);
-    await next();
-    console.log(`Completed: ${data.type}`);
-  };
+	return async (data, context, next) => {
+		console.log(`Processing: ${data.type}`);
+		await next();
+		console.log(`Completed: ${data.type}`);
+	};
 };
 
 // 2. Register middleware
@@ -197,4 +198,5 @@ Through the **dispatch & handler pattern**, we achieved:
 4. ✅ **Performance monitoring** - Automatically track processing time and error rates
 5. ✅ **Type safety** - Complete TypeScript support
 
-This architecture not only solves the code bloat problem but also lays a solid foundation for future feature expansion! 🎯
+This architecture not only solves the code bloat problem but also lays a solid foundation for future
+feature expansion! 🎯
