@@ -1,29 +1,31 @@
-import React, { createContext, useContext } from "react";
-import { VSCodeAPI } from "../chat";
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+import React, { createContext, useContext } from 'react';
+
+import { VSCodeAPI } from '../chat';
 
 // Ensure vscode API is available
 
 interface VSCodeContextType {
-  vscode: VSCodeAPI;
+	vscode: VSCodeAPI;
 }
 
 const VSCodeContext = createContext<VSCodeContextType | undefined>(undefined);
 
 export const VSCodeProvider: React.FC<{
-  children: React.ReactNode;
-  vscode: VSCodeAPI;
-}> = ({ children, vscode }) => {
-  return (
-    <VSCodeContext.Provider value={{ vscode }}>
-      {children}
-    </VSCodeContext.Provider>
-  );
-};
+	children: React.ReactNode;
+	vscode: VSCodeAPI;
+}> = ({ children, vscode }) => (
+	<VSCodeContext.Provider value={{ vscode }}>{children}</VSCodeContext.Provider>
+);
 
 export const useVSCode = (): VSCodeContextType => {
-  const context = useContext(VSCodeContext);
-  if (context === undefined) {
-    throw new Error("useVSCode must be used within a VSCodeProvider");
-  }
-  return context;
+	const context = useContext(VSCodeContext);
+	if (context === undefined) {
+		throw new Error('useVSCode must be used within a VSCodeProvider');
+	}
+	return context;
 };

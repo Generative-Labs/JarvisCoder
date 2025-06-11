@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 import type { OutputChannel } from 'vscode';
 
 /**
@@ -10,7 +15,7 @@ export class Logger {
 
 	/**
 	 * Initialize the logger with a VS Code OutputChannel
-	 * @param {OutputChannel} outputChannel - The VS Code OutputChannel to use for logging
+	 * @param outputChannel - The VS Code OutputChannel to use for logging
 	 */
 	static initialize(outputChannel: OutputChannel): void {
 		Logger.outputChannel = outputChannel;
@@ -18,8 +23,8 @@ export class Logger {
 
 	/**
 	 * Log an error message and optional exception
-	 * @param {string} message - The error message to log
-	 * @param {Error} [error] - Optional error object to log
+	 * @param message - The error message to log
+	 * @param error - Optional error object to log
 	 */
 	static error(message: string, error?: Error): void {
 		const logMessage = `ERROR: ${message}`;
@@ -31,7 +36,7 @@ export class Logger {
 
 	/**
 	 * Log a warning message
-	 * @param {string} message - The warning message to log
+	 * @param message - The warning message to log
 	 */
 	static warn(message: string): void {
 		Logger.outputChannel?.appendLine(`WARN: ${message}`);
@@ -39,7 +44,7 @@ export class Logger {
 
 	/**
 	 * Log an informational message
-	 * @param {string} message - The message to log
+	 * @param message - The message to log
 	 */
 	static info(message: string): void {
 		Logger.outputChannel?.appendLine(`INFO: ${message}`);
@@ -47,7 +52,7 @@ export class Logger {
 
 	/**
 	 * Log a debug message
-	 * @param {string} message - The debug message to log
+	 * @param message - The debug message to log
 	 */
 	static debug(message: string): void {
 		if (process.env.NODE_ENV === 'development') {
@@ -57,7 +62,7 @@ export class Logger {
 
 	/**
 	 * Log a trace message (most verbose level)
-	 * @param {string} message - The trace message to log
+	 * @param message - The trace message to log
 	 */
 	static trace(message: string): void {
 		if (process.env.NODE_ENV === 'development') {

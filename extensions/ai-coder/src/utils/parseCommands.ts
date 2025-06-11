@@ -1,3 +1,8 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 /**
  * Parses a multi-line string of commands into an array of individual command strings.
  *
@@ -8,9 +13,9 @@
  *
  * If the input `command` is null, undefined, or not a string, an empty array is returned.
  *
- * @param {string} command - The string containing one or more commands, potentially separated by newlines
+ * @param command - The string containing one or more commands, potentially separated by newlines
  *                  and including comments (lines starting with '#').
- * @returns {string[]} An array of strings, where each string is a valid command line.
+ * @returns An array of strings, where each string is a valid command line.
  *          Returns an empty array if the input is invalid or contains no valid commands.
  *
  * @example
@@ -20,11 +25,9 @@
  * ```
  */
 export function parseCommands(command: string): string[] {
-  if (!command || typeof command !== "string") {
-    return [];
-  }
-  const lines = command.split("\n");
-  return lines
-    .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("#"));
+	if (!command || typeof command !== 'string') {
+		return [];
+	}
+	const lines = command.split('\n');
+	return lines.map((line) => line.trim()).filter((line) => line && !line.startsWith('#'));
 }
