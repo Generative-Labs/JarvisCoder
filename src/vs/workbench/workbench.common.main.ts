@@ -185,6 +185,9 @@ import './contrib/telemetry/browser/telemetry.contribution.js';
 // Preferences
 import './contrib/preferences/browser/preferences.contribution.js';
 import './contrib/preferences/browser/keybindingsEditorContribution.js';
+
+// Settings Import
+import './contrib/settingsImport/browser/settingsImport.contribution.js';
 import './contrib/preferences/browser/preferencesSearch.js';
 
 // Performance
