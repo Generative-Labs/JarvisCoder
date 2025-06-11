@@ -1,486 +1,447 @@
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* VS Code theme variables integrated into Tailwind */
 :root {
-  /* VS Code theme variables - will be injected by VS Code at runtime */
-  --vscode-editor-background: #141414;
-  --vscode-sideBar-background: #1a1a1a;
-  --vscode-inputOption-activeBorder: #2f2f2f;
-  --vscode-panel-background: #141414;
-  --vscode-editor-foreground: #ffffff;
-  --vscode-foreground: #cccccc;
-  --vscode-descriptionForeground: #303030;
-  --vscode-panelSectionHeader-border: rgba(255, 255, 255, 0.12);
-  --vscode-disabledForeground: #8f8f8f;
-  --vscode-sideBar-dropBackground: #282828;
-  --vscode-button-secondaryForeground: #e5e5e5;
-  --vscode-input-background: #222222;
-  --vscode-input-foreground: #cccccc;
-  --vscode-input-border: rgba(255, 255, 255, 0.08);
-  --vscode-menu-selectionBorder: rgba(255, 255, 255, 0.12);
-  --vscode-editorWidget-background: #1a1a1a;
-  --vscode-statusBar-foreground: #aaaaaa; /*gray 04*/
-  --vscode-button-background: #3177ff;
-  --vscode-button-foreground: #ffffff;
-  --vscode-inputValidation-infoBorder: rgba(255, 255, 255, 0.06);
-  --vscode-button-hoverBackground: #484848;
-  --vscode-button-secondaryBackground: #303030;
-  --vscode-panel-border: #808080;
-  --vscode-sideBar-border: #808080;
-  --vscode-list-hoverBackground: #2a2d2e;
-  --vscode-list-activeSelectionBackground: #094771;
-  --vscode-textLink-foreground: #3794ff;
-  --vscode-errorForeground: #f85149;
-  --vscode-warningForeground: #ffab70;
-  --vscode-scrollbarSlider-background: #79797966;
-  --vscode-scrollbarSlider-hoverBackground: #646464b3;
-  --vscode-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-  --vscode-font-size: 13px;
-  --vscode-editor-font-family: 'Consolas', 'Courier New', monospace;
-  --vscode-editor-font-size: 14px;
+	font-size: var(--vscode-editor-font-size);
+	/* VS Code theme variables - will be injected by VS Code at runtime */
+	--vscode-editor-background: #141414;
+	--vscode-sideBar-background: #1a1a1a;
+	--vscode-inputOption-activeBorder: #2f2f2f;
+	--vscode-panel-background: #141414;
+	--vscode-editor-foreground: #ffffff;
+	--vscode-foreground: #cccccc;
+	--vscode-descriptionForeground: #303030;
+	--vscode-panelSectionHeader-border: rgba(255, 255, 255, 0.12);
+	--vscode-disabledForeground: #8f8f8f;
+	--vscode-sideBar-dropBackground: #282828;
+	--vscode-button-secondaryForeground: #e5e5e5;
+	--vscode-input-background: #222222;
+	--vscode-input-foreground: #cccccc;
+	--vscode-input-border: rgba(255, 255, 255, 0.08);
+	--vscode-menu-selectionBorder: rgba(255, 255, 255, 0.12);
+	--vscode-editorWidget-background: #1a1a1a;
+	--vscode-statusBar-foreground: #aaaaaa; /*gray 04*/
+	--vscode-button-background: #3177ff;
+	--vscode-button-foreground: #ffffff;
+	--vscode-inputValidation-infoBorder: rgba(255, 255, 255, 0.06);
+	--vscode-button-hoverBackground: #484848;
+	--vscode-button-secondaryBackground: #303030;
+	--vscode-panel-border: #808080;
+	--vscode-sideBar-border: #808080;
+	--vscode-list-hoverBackground: #2a2d2e;
+	--vscode-list-activeSelectionBackground: #094771;
+	--vscode-textLink-foreground: #3794ff;
+	--vscode-errorForeground: #f85149;
+	--vscode-warningForeground: #ffab70;
+	--vscode-scrollbarSlider-background: #79797966;
+	--vscode-scrollbarSlider-hoverBackground: #646464b3;
+	--vscode-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+	--vscode-font-size: 13px;
+	--vscode-editor-font-family: 'Consolas', 'Courier New', monospace;
+	--vscode-editor-font-size: 14px;
 
-  /* about chat variables */
-  --chat-bg: #141414; /* chat background */
-  --chat-head-bg: #141414; /* chat head background */
-  --chat-head-text: #ffffff; /* chat head text */
-  --chat-head-icon: #ffffff; /* chat head icon */
+	/* about chat variables */
+	--chat-bg: #141414; /* chat background */
+	--chat-head-bg: #141414; /* chat head background */
+	--chat-head-text: #ffffff; /* chat head text */
+	--chat-head-icon: #ffffff; /* chat head icon */
 
-  /* bubble variables */
-  --bubble-bg: #222222; /* chat bubble background */
-  --bubble-text: #ffffff; /* chat bubble text */
-  --bubble-border: #2f2f2f; /* chat bubble border */
+	/* bubble variables */
+	--bubble-bg: #222222; /* chat bubble background */
+	--bubble-text: #ffffff; /* chat bubble text */
+	--bubble-border: #2f2f2f; /* chat bubble border */
 
-  /* deep thinking variables */
-  --deepthinking-text: #8f8f8f; /* deep thinking text */
-  --deepthinking-icon: #8f8f8f; /* deep thinking icon */
-  --deepthinking-border: #282828; /* deep thinking border */
+	/* deep thinking variables */
+	--deepthinking-text: #8f8f8f; /* deep thinking text */
+	--deepthinking-icon: #8f8f8f; /* deep thinking icon */
+	--deepthinking-border: #282828; /* deep thinking border */
 
-  /* tag variables */
-  --tag-text: #ffffff; /* tag text */
-  --tag-icon: #ffffff; /* tag icon */
-  --tag-border: rgba(255, 255, 255, 0.06); /* tag border */
+	/* tag variables */
+	--tag-text: #ffffff; /* tag text */
+	--tag-icon: #ffffff; /* tag icon */
+	--tag-border: rgba(255, 255, 255, 0.06); /* tag border */
 
-  /* file tag variables */
-  --fileTag-text: #ffffff; /* file tag text */
-  --fileTagBase-bg: #ffffff; /* file tag base background */
-  --fileTagDefault-bg: #376dd4; /* file tag default background */
-  --fileTagDelete-bg: #ca4141; /* file tag delete background */
+	/* file tag variables */
+	--fileTag-text: #ffffff; /* file tag text */
+	--fileTagBase-bg: #ffffff; /* file tag base background */
+	--fileTagDefault-bg: #376dd4; /* file tag default background */
+	--fileTagDelete-bg: #ca4141; /* file tag delete background */
 
-  /* code dialog box variables */
-  --markdown-text: #ffffff; /* chat markdown text */
-  --codeDialogBox-border: #303030; /* code dialog box border */
-  --codeDialogBoxHead-bg: #141414; /* code dialog box head background */
-  --codeDialogBoxHeadLeft-text: #ffffff; /* code dialog box head left text */
-  --codeDialogBoxHeadLeft-icon: #ffffff; /* code dialog box head left icon */
-  --codeDialogBoxHeadRight-icon: #8f8f8f; /* code dialog box head right icon */
-  --codeDialogBoxContent-text: #ffffff; /* code dialog box content text */
-  --codeDialogBoxContent-bg: #222222; /* code dialog box content background */
-  --codeDialogBoxContent-mask: rgba(34, 34, 34, 0.8); /* code dialog box content mask */
+	/* code dialog box variables */
+	--markdown-text: #ffffff; /* chat markdown text */
+	--codeDialogBox-border: #303030; /* code dialog box border */
+	--codeDialogBoxHead-bg: #141414; /* code dialog box head background */
+	--codeDialogBoxHeadLeft-text: #ffffff; /* code dialog box head left text */
+	--codeDialogBoxHeadLeft-icon: #ffffff; /* code dialog box head left icon */
+	--codeDialogBoxHeadRight-icon: #8f8f8f; /* code dialog box head right icon */
+	--codeDialogBoxContent-text: #ffffff; /* code dialog box content text */
+	--codeDialogBoxContent-bg: #222222; /* code dialog box content background */
+	--codeDialogBoxContent-mask: rgba(34, 34, 34, 0.8); /* code dialog box content mask */
 
-  /* code operation button variables */
-  --codeButtonDefault-text: #e5e5e5; /* code button default text */
-  --codeButtonDefault-bg: #303030; /* code button default background */
-  --codeButtonHover-text: #ffffff; /* code button hover text */
-  --codeButtonHover-bg: #484848; /* code button hover background */
+	/* code operation button variables */
+	--codeButtonDefault-text: #e5e5e5; /* code button default text */
+	--codeButtonDefault-bg: #303030; /* code button default background */
+	--codeButtonHover-text: #ffffff; /* code button hover text */
+	--codeButtonHover-bg: #484848; /* code button hover background */
 
-  /* important button variables */
-  --buttonPrimaryDefault-text: #ffffff; /* button primary default text */
-  --buttonPrimaryDefault-icon: #ffffff; /* button primary default icon */
-  --buttonPrimaryDefault-bg: #3177ff; /* button primary default background */
-  /* other states overall transparency Hover-30% Disabled-70% */
+	/* important button variables */
+	--buttonPrimaryDefault-text: #ffffff; /* button primary default text */
+	--buttonPrimaryDefault-icon: #ffffff; /* button primary default icon */
+	--buttonPrimaryDefault-bg: #3177ff; /* button primary default background */
+	/* other states overall transparency Hover-30% Disabled-70% */
 
-  /* secondary button variables */
-  --buttonSecondaryDefault-text: #ffffff; /* button secondary default text */
-  --buttonSecondaryDefault-icon: #ffffff; /* button secondary default icon */
-  --buttonSecondaryDefault-bg: #282828; /* button secondary default background */
-  --buttonSecondaryHover-text: #ffffff; /* button secondary hover text */
-  --buttonSecondaryHover-icon: #ffffff; /* button secondary hover icon */
-  --buttonSecondaryHover-bg: #484848; /* button secondary hover background */
-  --buttonSecondaryDisabled-text: #8f8f8f; /* button secondary disabled text */
-  --buttonSecondaryDisabled-icon: #8f8f8f; /* button secondary disabled icon */
-  --buttonSecondaryDisabled-bg: #1a1a1a; /* button secondary disabled background */
+	/* secondary button variables */
+	--buttonSecondaryDefault-text: #ffffff; /* button secondary default text */
+	--buttonSecondaryDefault-icon: #ffffff; /* button secondary default icon */
+	--buttonSecondaryDefault-bg: #282828; /* button secondary default background */
+	--buttonSecondaryHover-text: #ffffff; /* button secondary hover text */
+	--buttonSecondaryHover-icon: #ffffff; /* button secondary hover icon */
+	--buttonSecondaryHover-bg: #484848; /* button secondary hover background */
+	--buttonSecondaryDisabled-text: #8f8f8f; /* button secondary disabled text */
+	--buttonSecondaryDisabled-icon: #8f8f8f; /* button secondary disabled icon */
+	--buttonSecondaryDisabled-bg: #1a1a1a; /* button secondary disabled background */
 
-  /* ghost button variables */
-  --buttonGhostDefault-text: #ffffff; /* button ghost default text */
-  --buttonGhostDefault-icon: #ffffff; /* button ghost default icon */
-  --buttonGhostDefault-bg: transparent; /* button ghost default background */
+	/* ghost button variables */
+	--buttonGhostDefault-text: #ffffff; /* button ghost default text */
+	--buttonGhostDefault-icon: #ffffff; /* button ghost default icon */
+	--buttonGhostDefault-bg: transparent; /* button ghost default background */
 
-  /* input box variables */
-  --input-bg: #1a1a1a; /* input box background */
-  --input-border: rgba(255, 255, 255, 0.08); /* input box border */
-  --inputDefault-text: #8f8f8f; /* input box default text */
-  --inputActive-text: #ffffff; /* input box active text */
+	/* input box variables */
+	--input-bg: #1a1a1a; /* input box background */
+	--input-border: rgba(255, 255, 255, 0.08); /* input box border */
+	--inputDefault-text: #8f8f8f; /* input box default text */
+	--inputActive-text: #ffffff; /* input box active text */
 
-  /* input box button variables */
-  --inputButtonDefault-text: #ffffff; /* input box button default text */
-  --inputButtonDefault-icon: #ffffff; /* input box button default icon */
-  --inputButtonDefault-bg: #3177ff; /* input box button default background */
-  /* other states overall transparency Hover-30% Disabled-70% */
+	/* input box button variables */
+	--inputButtonDefault-text: #ffffff; /* input box button default text */
+	--inputButtonDefault-icon: #ffffff; /* input box button default icon */
+	--inputButtonDefault-bg: #3177ff; /* input box button default background */
+	/* other states overall transparency Hover-30% Disabled-70% */
 
-  /* input box select model button variables */
-  --modelButtonDefault-text: #e5e5e5; /* model button default text */
-  --modelButtonDefault-icon: #e5e5e5; /* model button default icon */
-  --modelButtonDefault-bg: #222222; /* model button default background */
-  --modelButtonDefault-border: #303030; /* model button default border */
-  --modelButtonHover-text: #ffffff; /* model button hover text */
-  --modelButtonHover-icon: #ffffff; /* model button hover icon */
-  --modelButtonHover-bg: #303030; /* model button hover background */
-  --modelButtonHover-border: #484848; /* model button hover border */
+	/* input box select model button variables */
+	--modelButtonDefault-text: #e5e5e5; /* model button default text */
+	--modelButtonDefault-icon: #e5e5e5; /* model button default icon */
+	--modelButtonDefault-bg: #222222; /* model button default background */
+	--modelButtonDefault-border: #303030; /* model button default border */
+	--modelButtonHover-text: #ffffff; /* model button hover text */
+	--modelButtonHover-icon: #ffffff; /* model button hover icon */
+	--modelButtonHover-bg: #303030; /* model button hover background */
+	--modelButtonHover-border: #484848; /* model button hover border */
 
-  /* input box select model menu variables */
-  --menu-bg: #1a1a1a; /* menu background */
-  --menu-text: #e5e5e5; /* menu text */
-  --menu-border: rgba(255, 255, 255, 0.12); /* menu border */
+	/* input box select model menu variables */
+	--menu-bg: #1a1a1a; /* menu background */
+	--menu-text: #e5e5e5; /* menu text */
+	--menu-border: rgba(255, 255, 255, 0.12); /* menu border */
 
-  /* input box execute operation bar variables */
-  --bar-bg: #1a1a1a; /* bar background */
-  --bar-border: rgba(255, 255, 255, 0.08); /* bar border */
-  --bar-text: #aaaaaa; /* bar text */
+	/* input box execute operation bar variables */
+	--bar-bg: #1a1a1a; /* bar background */
+	--bar-border: rgba(255, 255, 255, 0.08); /* bar border */
+	--bar-text: #aaaaaa; /* bar text */
 }
 
 body {
-  color: var(--vscode-editor-foreground);
-  background-color: var(--vscode-editor-background);
-  font-family: var(--vscode-font-family);
-  font-size: var(--vscode-font-size);
-  line-height: 1.5;
-  overflow-x: hidden;
-  overflow-y: auto;
+	color: var(--vscode-editor-foreground);
+	background-color: var(--vscode-editor-background);
+	font-family: var(--vscode-font-family);
+	font-size: var(--vscode-font-size);
+	line-height: 1.5;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
-/* Base styles reset, using VS Code theme */
-@layer base {
-  /* h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    color: var(--vscode-editor-foreground);
-    font-family: var(--vscode-font-family);
-  } */
-  /* 
-  p {
-    color: var(--vscode-editor-foreground);
-    line-height: 1.6;
-  } */
-
-  /* todo config font size with vscode */
-  /* code {
-    font-family: var(--vscode-editor-font-family);
-    font-size: var(--vscode-editor-font-size);
-    background-color: var(--vscode-input-background);
-    color: var(--vscode-editor-foreground);
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-  } */
-
-  /* pre {
-    font-family: var(--vscode-editor-font-family);
-    font-size: var(--vscode-editor-font-size);
-    background-color: var(--vscode-editor-background);
-    color: var(--vscode-editor-foreground);
-    border: 1px solid var(--vscode-panel-border);
-    border-radius: 0.375rem;
-    padding: 1rem;
-    overflow-x: auto;
-  } */
-}
-/* todo config font size with vscode */
-/* .user-message-block {
-  font-family: var(--vscode-editor-font-family);
-  font-size: var(--vscode-editor-font-size);
-} */
-
-/* Custom component styles */
 @layer components {
-  .btn-primary {
-    @apply px-4 py-2 rounded;
-    background-color: var(--vscode-button-background);
-    color: var(--vscode-button-foreground);
-    border: none;
-    cursor: pointer;
-    font-family: var(--vscode-font-family);
-    font-size: var(--vscode-font-size);
-    transition: background-color 0.2s ease;
-  }
+	.btn-primary {
+		@apply px-4 py-2 rounded;
+		background-color: var(--vscode-button-background);
+		color: var(--vscode-button-foreground);
+		border: none;
+		cursor: pointer;
+		font-family: var(--vscode-font-family);
+		font-size: var(--vscode-font-size);
+		transition: background-color 0.2s ease;
+	}
 
-  .btn-primary:hover {
-    background-color: var(--vscode-button-hoverBackground);
-  }
+	.btn-primary:hover {
+		background-color: var(--vscode-button-hoverBackground);
+	}
 
-  .btn-secondary {
-    @apply px-4 py-2 rounded;
-    background-color: var(--vscode-button-secondaryBackground);
-    color: var(--vscode-editor-foreground);
-    border: 1px solid var(--vscode-panel-border);
-    cursor: pointer;
-    font-family: var(--vscode-font-family);
-    font-size: var(--vscode-font-size);
-    transition: background-color 0.2s ease;
-  }
+	.btn-secondary {
+		@apply px-4 py-2 rounded;
+		background-color: var(--vscode-button-secondaryBackground);
+		color: var(--vscode-editor-foreground);
+		border: 1px solid var(--vscode-panel-border);
+		cursor: pointer;
+		font-family: var(--vscode-font-family);
+		font-size: var(--vscode-font-size);
+		transition: background-color 0.2s ease;
+	}
 
-  .btn-secondary:hover {
-    background-color: var(--vscode-list-hoverBackground);
-  }
+	.btn-secondary:hover {
+		background-color: var(--vscode-list-hoverBackground);
+	}
 
-  .input-field {
-    @apply px-3 py-2 rounded border;
-    background-color: var(--vscode-input-background);
-    color: var(--vscode-input-foreground);
-    border-color: var(--vscode-input-border);
-    font-family: var(--vscode-font-family);
-    font-size: var(--vscode-font-size);
-    outline: none;
-  }
+	.input-field {
+		@apply px-3 py-2 rounded border;
+		background-color: var(--vscode-input-background);
+		color: var(--vscode-input-foreground);
+		border-color: var(--vscode-input-border);
+		font-family: var(--vscode-font-family);
+		font-size: var(--vscode-font-size);
+		outline: none;
+	}
 
-  .input-field:focus {
-    border-color: var(--vscode-button-background);
-    box-shadow: 0 0 0 1px var(--vscode-button-background);
-  }
+	.input-field:focus {
+		border-color: var(--vscode-button-background);
+		box-shadow: 0 0 0 1px var(--vscode-button-background);
+	}
 
-  .card {
-    background-color: var(--vscode-sideBar-background);
-    border: 1px solid var(--vscode-panel-border);
-    border-radius: 0.5rem;
-    padding: 1rem;
-  }
+	.card {
+		background-color: var(--vscode-sideBar-background);
+		border: 1px solid var(--vscode-panel-border);
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
 
-  .message-user {
-    background-color: var(--vscode-list-activeSelectionBackground);
-    color: var(--vscode-editor-foreground);
-    border: 1px solid var(--vscode-panel-border);
-  }
+	.message-user {
+		background-color: var(--vscode-list-activeSelectionBackground);
+		color: var(--vscode-editor-foreground);
+		border: 1px solid var(--vscode-panel-border);
+	}
 
-  .message-bot {
-    background-color: var(--vscode-sideBar-background);
-    color: var(--vscode-editor-foreground);
-    border: 1px solid var(--vscode-panel-border);
-  }
+	.message-bot {
+		background-color: var(--vscode-sideBar-background);
+		color: var(--vscode-editor-foreground);
+		border: 1px solid var(--vscode-panel-border);
+	}
 
-  .error-text {
-    color: var(--vscode-errorForeground);
-  }
+	.error-text {
+		color: var(--vscode-errorForeground);
+	}
 
-  .warning-text {
-    color: var(--vscode-warningForeground);
-  }
+	.warning-text {
+		color: var(--vscode-warningForeground);
+	}
 
-  .link-text {
-    color: var(--vscode-textLink-foreground);
-    text-decoration: none;
-  }
+	.link-text {
+		color: var(--vscode-textLink-foreground);
+		text-decoration: none;
+	}
 
-  .link-text:hover {
-    text-decoration: underline;
-  }
+	.link-text:hover {
+		text-decoration: underline;
+	}
 
-  .muted-text {
-    color: var(--vscode-descriptionForeground);
-  }
+	.muted-text {
+		color: var(--vscode-descriptionForeground);
+	}
 
-  .disabled-text {
-    color: var(--vscode-disabledForeground);
-  }
+	.disabled-text {
+		color: var(--vscode-disabledForeground);
+	}
 }
 
 @layer utilities {
-  /* Background color classes */
-  .bg-vscode-editor {
-    background-color: var(--vscode-editor-background);
-  }
-  .bg-vscode-sidebar {
-    background-color: var(--vscode-sideBar-background);
-  }
-  .bg-vscode-panel {
-    background-color: var(--vscode-panel-background);
-  }
-  .bg-vscode-input {
-    background-color: var(--vscode-input-background);
-  }
-  .bg-vscode-button {
-    background-color: var(--vscode-button-background);
-  }
-  .bg-vscode-button-secondary {
-    background-color: var(--vscode-button-secondaryBackground);
-  }
-  .bg-vscode-hover {
-    background-color: var(--vscode-list-hoverBackground);
-  }
-  .bg-vscode-selection {
-    background-color: var(--vscode-list-activeSelectionBackground);
-  }
+	/* Background color classes */
+	.bg-vscode-editor {
+		background-color: var(--vscode-editor-background);
+	}
+	.bg-vscode-sidebar {
+		background-color: var(--vscode-sideBar-background);
+	}
+	.bg-vscode-panel {
+		background-color: var(--vscode-panel-background);
+	}
+	.bg-vscode-input {
+		background-color: var(--vscode-input-background);
+	}
+	.bg-vscode-button {
+		background-color: var(--vscode-button-background);
+	}
+	.bg-vscode-button-secondary {
+		background-color: var(--vscode-button-secondaryBackground);
+	}
+	.bg-vscode-hover {
+		background-color: var(--vscode-list-hoverBackground);
+	}
+	.bg-vscode-selection {
+		background-color: var(--vscode-list-activeSelectionBackground);
+	}
 
-  /* Text color classes */
-  .text-vscode-foreground {
-    color: var(--vscode-editor-foreground);
-  }
-  .text-vscode-input {
-    color: var(--vscode-input-foreground);
-  }
-  .text-vscode-button {
-    color: var(--vscode-button-foreground);
-  }
-  .text-vscode-description {
-    color: var(--vscode-descriptionForeground);
-  }
-  .text-vscode-disabled {
-    color: var(--vscode-disabledForeground);
-  }
-  .text-vscode-link {
-    color: var(--vscode-textLink-foreground);
-  }
-  .text-vscode-error {
-    color: var(--vscode-errorForeground);
-  }
-  .text-vscode-warning {
-    color: var(--vscode-warningForeground);
-  }
+	/* Text color classes */
+	.text-vscode-foreground {
+		color: var(--vscode-editor-foreground);
+	}
+	.text-vscode-input {
+		color: var(--vscode-input-foreground);
+	}
+	.text-vscode-button {
+		color: var(--vscode-button-foreground);
+	}
+	.text-vscode-description {
+		color: var(--vscode-descriptionForeground);
+	}
+	.text-vscode-disabled {
+		color: var(--vscode-disabledForeground);
+	}
+	.text-vscode-link {
+		color: var(--vscode-textLink-foreground);
+	}
+	.text-vscode-error {
+		color: var(--vscode-errorForeground);
+	}
+	.text-vscode-warning {
+		color: var(--vscode-warningForeground);
+	}
 
-  /* Border color classes */
-  .border-vscode-panel {
-    border-color: var(--vscode-panel-border);
-  }
-  .border-vscode-input {
-    border-color: var(--vscode-input-border);
-  }
-  .border-vscode-sidebar {
-    border-color: var(--vscode-sideBar-border);
-  }
+	/* Border color classes */
+	.border-vscode-panel {
+		border-color: var(--vscode-panel-border);
+	}
+	.border-vscode-input {
+		border-color: var(--vscode-input-border);
+	}
+	.border-vscode-sidebar {
+		border-color: var(--vscode-sideBar-border);
+	}
 
-  /* Font classes */
-  .font-vscode {
-    font-family: var(--vscode-font-family);
-  }
-  .font-vscode-editor {
-    font-family: var(--vscode-editor-font-family);
-  }
-  .text-vscode-size {
-    font-size: var(--vscode-font-size);
-  }
-  .text-vscode-editor-size {
-    font-size: var(--vscode-editor-font-size);
-  }
+	/* Font classes */
+	.font-vscode {
+		font-family: var(--vscode-font-family);
+	}
+	.font-vscode-editor {
+		font-family: var(--vscode-editor-font-family);
+	}
+	.text-vscode-size {
+		font-size: var(--vscode-font-size);
+	}
+	.text-vscode-editor-size {
+		font-size: var(--vscode-editor-font-size);
+	}
 
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-  /* Hide scrollbar for IE, Edge and Firefox */
-  .no-scrollbar {
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
+	/* Hide scrollbar for Chrome, Safari and Opera */
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	/* Hide scrollbar for IE, Edge and Firefox */
+	.no-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
 }
 
 /* List styles */
 ol {
-  list-style: decimal outside;
-  padding-left: 1.5em;
-  color: var(--vscode-editor-foreground);
+	list-style: decimal outside;
+	padding-left: 1.5em;
+	color: var(--vscode-editor-foreground);
 }
 
 ul {
-  list-style: disc outside;
-  padding-left: 1.5em;
-  color: var(--vscode-editor-foreground);
+	list-style: disc outside;
+	padding-left: 1.5em;
+	color: var(--vscode-editor-foreground);
 }
 
 /* Custom scrollbar using VS Code theme */
 .custom-scrollbar {
-  overflow: overlay;
-  scrollbar-width: none;
+	overflow: overlay;
+	scrollbar-width: none;
 }
 
 .custom-scrollbar:hover {
-  scrollbar-width: thin;
-  scrollbar-color: var(--vscode-scrollbarSlider-background) transparent;
+	scrollbar-width: thin;
+	scrollbar-color: var(--vscode-scrollbarSlider-background) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-  background: transparent;
+	width: 0;
+	height: 0;
+	background: transparent;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background: transparent;
+	width: 8px;
+	height: 8px;
+	background: transparent;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb {
-  background: var(--vscode-scrollbarSlider-background);
-  border-radius: 20px;
+	background: var(--vscode-scrollbarSlider-background);
+	border-radius: 20px;
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-thumb:hover {
-  background: var(--vscode-scrollbarSlider-hoverBackground);
+	background: var(--vscode-scrollbarSlider-hoverBackground);
 }
 
 .custom-scrollbar:hover::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 /* Always visible scrollbar */
 .custom-show-scrollbar {
-  overflow: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--vscode-scrollbarSlider-background) transparent;
+	overflow: auto;
+	scrollbar-width: thin;
+	scrollbar-color: var(--vscode-scrollbarSlider-background) transparent;
 }
 
 .custom-show-scrollbar::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-  background: transparent;
+	width: 8px;
+	height: 8px;
+	background: transparent;
 }
 
 .custom-show-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--vscode-scrollbarSlider-background);
-  border-radius: 20px;
+	background: var(--vscode-scrollbarSlider-background);
+	border-radius: 20px;
 }
 
 .custom-show-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--vscode-scrollbarSlider-hoverBackground);
+	background: var(--vscode-scrollbarSlider-hoverBackground);
 }
 
 .custom-show-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 
 .loading-text {
-  color: var(--vscode-descriptionForeground);
-  text-align: center;
-  padding: 16px;
-  font-style: italic;
+	color: var(--vscode-descriptionForeground);
+	text-align: center;
+	padding: 16px;
+	font-style: italic;
 }
 
 @keyframes dotAnimation {
-  0%,
-  20% {
-    opacity: 0.4;
-  }
-  50% {
-    opacity: 1;
-  }
-  80%,
-  100% {
-    opacity: 0.4;
-  }
+	0%,
+	20% {
+		opacity: 0.4;
+	}
+	50% {
+		opacity: 1;
+	}
+	80%,
+	100% {
+		opacity: 0.4;
+	}
 }
 
 .generating-dots .dot {
-  display: inline-block;
-  animation: dotAnimation 1.4s infinite;
-  color: var(--vscode-descriptionForeground);
+	display: inline-block;
+	animation: dotAnimation 1.4s infinite;
+	color: var(--vscode-descriptionForeground);
 }
 
 .generating-dots .dot:nth-child(2) {
-  animation-delay: 0.2s;
+	animation-delay: 0.2s;
 }
 
 .generating-dots .dot:nth-child(3) {
-  animation-delay: 0.4s;
+	animation-delay: 0.4s;
 }
