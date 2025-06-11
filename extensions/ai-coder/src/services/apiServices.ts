@@ -106,9 +106,13 @@ export async function sendMessageAction(
 				signal,
 			});
 			if (!response.ok || !response.body) {
-				const data = await response.json();
-				if (data.error && data.error.business_code === ErrorMessage.NEED_INVITE_CODE) {
-					throw new Error(ErrorMessage.NEED_INVITE_CODE);
+				try {
+					const data = await response.json();
+					if (data.error && data.error.business_code === ErrorMessage.NEED_INVITE_CODE) {
+						throw new Error(ErrorMessage.NEED_INVITE_CODE);
+					}
+				} catch (error) {
+					throw error;
 				}
 
 				await onMessage({
@@ -465,7 +469,6 @@ export async function openChatAction(userId: string): Promise<OpenChatResponse |
 		}),
 	}).then(async res => {
 		const data = await res.json();
-		console.log('open chat data', data);
 
 		if (!res.ok) {
 			let errorMessage = 'open new chat failed';
@@ -474,7 +477,7 @@ export async function openChatAction(userId: string): Promise<OpenChatResponse |
 					errorMessage = data.detail;
 				} else if (data.message) {
 					errorMessage = data.message;
-				} else if (data.detail.length > 0 && data.detail[0].msg) {
+				} else if (Array.isArray(data.detail) && data.detail.length > 0 && data.detail[0].msg) {
 					errorMessage = data.detail[0].msg;
 				}
 			}

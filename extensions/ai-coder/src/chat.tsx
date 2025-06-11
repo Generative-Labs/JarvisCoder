@@ -229,7 +229,7 @@ const ChatApp: React.FC = () => {
 						tokenManager.clearTokens();
 						return;
 					}
-					if (userInfo.business_code === 'NEED_INVITE_CODE') {
+					if (userInfo.business_code === ErrorMessage.NEED_INVITE_CODE) {
 						setError(ErrorMessage.NEED_INVITE_CODE);
 					} else {
 						setError(null);
