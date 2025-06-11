@@ -3,19 +3,8 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-export interface UserInfo {
-	uuid: string;
-	email: string;
-	name: string;
-	avatar: string;
-	business_code: string | null;
-}
-
-export interface TokenInfo {
-	/** The access token */
-	token: string;
-	/** The refresh token */
-	refreshToken: string;
-	/** The expiration timestamp in milliseconds */
-	expiresAt: number;
+export enum ErrorMessage {
+	NEED_INVITE_CODE = 'NEED_INVITE_CODE',
+	TOKEN_EXPIRED = 'token_expired',
+	REFRESH_TOKEN_EXPIRED = 'refresh_token_expired',
 }

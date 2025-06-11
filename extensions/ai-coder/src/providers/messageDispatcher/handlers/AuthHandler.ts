@@ -96,6 +96,7 @@ export class AuthHandler implements MessageHandler {
 
 				const userInfo = {
 					...decryptResObj.user,
+					business_code: decryptResObj.business_code,
 					avatar: `https://cdn.stamp.fyi/avatar/${decryptResObj.user.name}`,
 				};
 				const tokenInfo = {

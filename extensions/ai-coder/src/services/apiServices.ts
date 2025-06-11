@@ -5,6 +5,7 @@
 
 import { API_BASE_URL } from '../configs';
 import { Message } from '../types/chats';
+import { ErrorMessage } from '../types/error';
 import { fetchWithToken } from '../utils/requestInterceptor';
 
 /**
@@ -105,6 +106,11 @@ export async function sendMessageAction(
 				signal,
 			});
 			if (!response.ok || !response.body) {
+				const data = await response.json();
+				if (data.error && data.error.business_code === ErrorMessage.NEED_INVITE_CODE) {
+					throw new Error(ErrorMessage.NEED_INVITE_CODE);
+				}
+
 				await onMessage({
 					type: 'failed',
 					data: {
@@ -165,6 +171,9 @@ export async function sendMessageAction(
 			}
 			break;
 		} catch (error) {
+			if (error instanceof Error && error.message === ErrorMessage.NEED_INVITE_CODE) {
+				throw error;
+			}
 			// check if the error is an abort error
 			if (error instanceof Error && error.name === 'AbortError') {
 				onMessage({
@@ -448,337 +457,36 @@ export interface OpenChatResponse {
  * @throws {Error} If there's an error during the API call
  */
 export async function openChatAction(userId: string): Promise<OpenChatResponse | null> {
-	try {
-		const response = await fetchWithToken(`${API_BASE_URL}/chat/open`, {
-			method: 'POST',
-			mode: 'cors',
-			body: JSON.stringify({
-				user: userId,
-			}),
-		});
+	return await fetchWithToken(`${API_BASE_URL}/chat/open`, {
+		method: 'POST',
+		mode: 'cors',
+		body: JSON.stringify({
+			user: userId,
+		}),
+	}).then(async res => {
+		const data = await res.json();
+		console.log('open chat data', data);
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		if (!res.ok) {
+			let errorMessage = 'open new chat failed';
+			if (data.detail) {
+				if (typeof data.detail === 'string') {
+					errorMessage = data.detail;
+				} else if (data.message) {
+					errorMessage = data.message;
+				} else if (data.detail.length > 0 && data.detail[0].msg) {
+					errorMessage = data.detail[0].msg;
+				}
+			}
+			if (data.error && data.error.business_code === ErrorMessage.NEED_INVITE_CODE) {
+				errorMessage = ErrorMessage.NEED_INVITE_CODE;
+			}
+			throw new Error(errorMessage);
 		}
-		return await response.json();
-	} catch (_error) {
-		// Log error to error channel
-		// Error is already handled by onMessage if provided
-		return null;
-	}
+		return data;
+	});
 }
 
-//
-/**
- * Interface for experiment data
- */
-export interface ExperimentData {
-	/**
-	 *
-	 */
-	id?: string | number;
-	/**
-	 *
-	 */
-	user: string;
-	/**
-	 *
-	 */
-	title: string;
-	/**
-	 *
-	 */
-	model_name: string;
-	/**
-	 *
-	 */
-	model_version?: string;
-	/**
-	 *
-	 */
-	model_parameters?: ModelParameters;
-	/**
-	 *
-	 */
-	raw_input: string;
-	/**
-	 *
-	 */
-	raw_output: string;
-	/**
-	 *
-	 */
-	evaluation_metrics?: Record<string, unknown>;
-	/**
-	 *
-	 */
-	status: string;
-	/**
-	 *
-	 */
-	tags?: string[];
-	/**
-	 *
-	 */
-	notes?: string;
-	/**
-	 *
-	 */
-	references?: {
-		prompt_id?: number;
-		input_dataset_ids?: number[];
-		context_ids?: number[];
-	};
-	/**
-	 *
-	 */
-	prompt_id?: number;
-	/**
-	 *
-	 */
-	input_dataset_ids?: number[];
-	/**
-	 *
-	 */
-	context_ids?: number[];
-	/**
-	 *
-	 */
-	created_at?: string;
-	/**
-	 *
-	 */
-	updated_at?: string;
-}
-
-/**
- * Interface representing the response from creating a new experiment.
- */
-export interface CreateExperimentResponse {
-	/** The unique identifier of the created experiment */
-	experiment_id: number | string;
-
-	/** A message describing the result of the operation */
-	message: string;
-}
-/**
- * Creates a new experiment with the provided data.
- *
- * @param experimentData - The experiment data to create
- * @returns A promise that resolves to the API response
- *          containing the created experiment ID and status message
- * @throws {Error} If there's an error during the API call or if the response is not ok
- */
-export async function createExperiment(
-	experimentData: ExperimentData,
-): Promise<ApiResponse<CreateExperimentResponse>> {
-	// Use mock implementation if flag is set
-	try {
-		const response = await fetchWithToken(`${API_BASE_URL}/experiments`, {
-			method: 'POST',
-			mode: 'cors',
-			body: JSON.stringify(experimentData),
-		});
-
-		if (!response.ok) {
-			return {
-				success: false,
-				error: response.statusText ? response.statusText : 'Unknown error creating experiment',
-			};
-		}
-
-		const data = await response.json();
-		return {
-			success: true,
-			data,
-		};
-	} catch (error) {
-		// Error is already handled by the calling function
-		return {
-			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error creating experiment',
-		};
-	}
-}
-
-/**
- * Retrieves all experiments associated with a specific user.
- *
- * @param userId - The unique identifier of the user whose experiments to retrieve
- * @returns A promise that resolves to an API response
- *          containing an array of experiment data objects
- * @throws {Error} If there's an error during the API call or if the response is not ok
- */
-export async function getUserExperiments(userId: string): Promise<ApiResponse<ExperimentData[]>> {
-	try {
-		const response = await fetchWithToken(`${API_BASE_URL}/users/${userId}/experiments`, {
-			method: 'GET',
-			mode: 'cors',
-		});
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const data = await response.json();
-		return {
-			success: true,
-			data,
-		};
-	} catch (error) {
-		// Error is already handled by the calling function
-		return {
-			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error fetching experiments',
-		};
-	}
-}
-
-/**
- * Interface representing the detailed response for an experiment.
- * Contains comprehensive information about a specific experiment.
- */
-export interface ExperimentDetailResponse {
-	/** Unique identifier for the experiment */
-	id: number;
-
-	/** Title of the experiment */
-	title: string;
-
-	/** Name of the AI model used in the experiment */
-	model_name: string;
-
-	/** Version of the AI model */
-	model_version: string | null;
-
-	/** Configuration parameters used for the AI model */
-	model_parameters: {
-		/** Temperature setting for model generation */
-		temperature: number;
-
-		/** Maximum number of tokens to generate */
-		max_token: number | null;
-	};
-
-	/** Temperature setting (duplicate of model_parameters.temperature) */
-	temperature: number;
-
-	/** Maximum token limit (duplicate of model_parameters.max_token) */
-	max_token: number | null;
-
-	/** Current status of the experiment (e.g., 'completed', 'failed') */
-	status: string;
-
-	/** Array of tags associated with the experiment */
-	tags: string[];
-
-	/** Additional notes or description about the experiment */
-	notes: string;
-
-	/** Evaluation metrics and results */
-	evaluation_metrics: Record<string, unknown>;
-
-	/** Raw input data used in the experiment */
-	raw_input: string;
-
-	/** Raw output data generated by the experiment */
-	raw_output: string;
-
-	/** Timestamp when the experiment was created */
-	created_at: string;
-
-	/** Timestamp when the experiment was last updated */
-	updated_at: string;
-
-	/** ID of the prompt used in the experiment */
-	prompt_id: number;
-}
-
-/**
- * Retrieves detailed information about a specific experiment.
- *
- * @param userId - The unique identifier of the user who owns the experiment
- * @param experimentId - The unique identifier of the experiment to retrieve
- * @returns A promise that resolves to an API response
- *          containing the detailed experiment data
- * @throws {Error} If there's an error during the API call or if the response is not ok
- */
-export async function getExperimentsDetail(
-	userId: string,
-	experimentId: number,
-): Promise<ApiResponse<ExperimentDetailResponse>> {
-	try {
-		const response = await fetchWithToken(
-			// /users/{user_id}/experiments/{experiment_id}
-			`${API_BASE_URL}/users/${userId}/experiments/${experimentId}`,
-			{
-				method: 'GET',
-				mode: 'cors',
-			},
-		);
-
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const data = await response.json();
-		return {
-			success: true,
-			data,
-		};
-	} catch (error) {
-		// Error is already handled by the calling function
-		return {
-			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error fetching experiments',
-		};
-	}
-}
-
-/**
- * Updates an existing experiment with new data.
- *
- * @param experimentId - The unique identifier of the experiment to update
- * @param experimentData - The experiment data to update
- * @param experimentData.status - The new status of the experiment
- * @param experimentData.tags - The updated tags for the experiment
- * @param experimentData.notes - The updated notes for the experiment
- * @returns A promise that resolves to an API response
- *          containing the updated experiment ID and status message
- * @throws {Error} If there's an error during the API call or if the response is not ok
- */
-export async function updateExperiment(
-	experimentId: string,
-	experimentData: {
-		status: string;
-		tags: string[];
-		notes: string;
-	},
-): Promise<ApiResponse<CreateExperimentResponse>> {
-	try {
-		const response = await fetch(`${API_BASE_URL}/experiments/${experimentId} `, {
-			method: 'PATCH',
-			mode: 'cors',
-			body: JSON.stringify(experimentData),
-		});
-
-		if (!response.ok) {
-			throw new Error(`Failed to create experiment: ${response.statusText}`);
-		}
-
-		const data = await response.json();
-		return {
-			success: true,
-			data,
-		};
-	} catch (error) {
-		// Error is already handled by the calling function
-		return {
-			success: false,
-			error: error instanceof Error ? error.message : 'Unknown error creating experiment',
-		};
-	}
-}
 
 /**
  * Interface representing the token response from the authentication server.

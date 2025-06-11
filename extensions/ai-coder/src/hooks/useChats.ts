@@ -10,6 +10,8 @@ import { useVSCode } from '../contexts/VSCodeContext';
 import { EventMessage } from '../providers/chatEventMessage';
 import { openChatAction } from '../services/apiServices';
 import { Chat } from '../types/chats';
+import { ErrorMessage } from '../types/error';
+import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 
 export const useChats = (): {
 	chats: Chat[] | null;
@@ -25,6 +27,7 @@ export const useChats = (): {
 } => {
 	const { vscode } = useVSCode();
 	const { userInfo, onTokenExpired } = useAuth();
+	const { setError } = useErrorHandler();
 
 	const [chats, setChats] = useState<Chat[] | null>(null);
 	const [noWorkspaceChats, setNoWorkspaceChats] = useState<Chat[] | null>(null);
@@ -90,6 +93,9 @@ export const useChats = (): {
 			} catch (error: unknown) {
 				if (error instanceof Error && error.message === 'refresh_token_expired') {
 					onTokenExpired();
+				}
+				if (error instanceof Error && error.message === ErrorMessage.NEED_INVITE_CODE) {
+					setError(ErrorMessage.NEED_INVITE_CODE);
 				}
 			} finally {
 				setIsNewChat(false);
