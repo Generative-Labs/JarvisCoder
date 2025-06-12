@@ -18,7 +18,7 @@ import { onUnexpectedError } from '../../../../base/common/errors.js';
 import { KeyCode } from '../../../../base/common/keyCodes.js';
 import { splitRecentLabel } from '../../../../base/common/labels.js';
 import { DisposableStore, toDisposable } from '../../../../base/common/lifecycle.js';
-import { ILink, LinkedText, parseLinkedText } from '../../../../base/common/linkedText.js';
+import { ILink, LinkedText } from '../../../../base/common/linkedText.js';
 import { parse } from '../../../../base/common/marshalling.js';
 import { Schemas, matchesScheme } from '../../../../base/common/network.js';
 import { OS } from '../../../../base/common/platform.js';
@@ -45,7 +45,7 @@ import { IOpenerService } from '../../../../platform/opener/common/opener.js';
 import { IProductService } from '../../../../platform/product/common/productService.js';
 import { IQuickInputService } from '../../../../platform/quickinput/common/quickInput.js';
 import { IStorageService, StorageScope, StorageTarget, WillSaveStateReason } from '../../../../platform/storage/common/storage.js';
-import { ITelemetryService, TelemetryLevel, firstSessionDateStorageKey } from '../../../../platform/telemetry/common/telemetry.js';
+import { ITelemetryService, TelemetryLevel } from '../../../../platform/telemetry/common/telemetry.js';
 import { getTelemetryLevel } from '../../../../platform/telemetry/common/telemetryUtils.js';
 import { defaultButtonStyles, defaultKeybindingLabelStyles, defaultToggleStyles } from '../../../../platform/theme/browser/defaultStyles.js';
 import { IWindowOpenable } from '../../../../platform/window/common/window.js';
@@ -63,7 +63,7 @@ import { gettingStartedCheckedCodicon, gettingStartedUncheckedCodicon } from './
 import { GettingStartedEditorOptions, GettingStartedInput } from './gettingStartedInput.js';
 import { IResolvedWalkthrough, IResolvedWalkthroughStep, IWalkthroughsService, hiddenEntriesConfigurationKey, parseDescription } from './gettingStartedService.js';
 import { RestoreWalkthroughsConfigurationValue, restoreWalkthroughsConfigurationKey } from './startupPage.js';
-import { copilotSettingsMessage, NEW_WELCOME_EXPERIENCE, startEntries } from '../common/gettingStartedContent.js';
+import { NEW_WELCOME_EXPERIENCE, startEntries } from '../common/gettingStartedContent.js';
 import { GroupDirection, GroupsOrder, IEditorGroup, IEditorGroupsService } from '../../../services/editor/common/editorGroupsService.js';
 import { IExtensionService } from '../../../services/extensions/common/extensions.js';
 import { IHostService } from '../../../services/host/browser/host.js';
@@ -73,7 +73,7 @@ import { AccessibilityVerbositySettingId } from '../../accessibility/browser/acc
 import { AccessibleViewAction } from '../../accessibility/browser/accessibleViewActions.js';
 import { KeybindingLabel } from '../../../../base/browser/ui/keybindingLabel/keybindingLabel.js';
 import { ScrollbarVisibility } from '../../../../base/common/scrollable.js';
-import { IGettingStartedExperimentService } from './gettingStartedExpService.js';
+// import { IGettingStartedExperimentService } from './gettingStartedExpService.js';
 
 const SLIDE_TRANSITION_TIME_MS = 250;
 const configurationKey = 'workbench.startupEditor';
@@ -149,24 +149,24 @@ export class GettingStartedPage extends EditorPane {
 
 	private contextService: IContextKeyService;
 
-	private hasScrolledToFirstCategory = false;
+	// private hasScrolledToFirstCategory = false;
 	private recentlyOpenedList?: GettingStartedIndexList<RecentEntry>;
 	private startList?: GettingStartedIndexList<IWelcomePageStartEntry>;
 	private gettingStartedList?: GettingStartedIndexList<IResolvedWalkthrough>;
 
-	private stepsSlide!: HTMLElement;
+	// private stepsSlide!: HTMLElement;
 	private categoriesSlide!: HTMLElement;
 	private stepsContent!: HTMLElement;
 	private stepMediaComponent!: HTMLElement;
-	private nextButton!: HTMLButtonElement;
+	// private nextButton!: HTMLButtonElement;
 	private webview!: IWebviewElement;
 
 	private layoutMarkdown: (() => void) | undefined;
 
 	private detailsRenderer: GettingStartedDetailsRenderer;
 
-	private readonly categoriesSlideDisposables: DisposableStore;
-	private showFeaturedWalkthrough = true;
+	// private readonly categoriesSlideDisposables: DisposableStore;
+	// private showFeaturedWalkthrough = true;
 
 	constructor(
 		group: IEditorGroup,
@@ -193,7 +193,7 @@ export class GettingStartedPage extends EditorPane {
 		@IWebviewService private readonly webviewService: IWebviewService,
 		@IWorkspaceContextService private readonly workspaceContextService: IWorkspaceContextService,
 		@IAccessibilityService private readonly accessibilityService: IAccessibilityService,
-		@IGettingStartedExperimentService private readonly gettingStartedExperimentService: IGettingStartedExperimentService,
+		// @IGettingStartedExperimentService private readonly gettingStartedExperimentService: IGettingStartedExperimentService,
 	) {
 
 		super(GettingStartedPage.ID, group, telemetryService, themeService, storageService);
@@ -207,7 +207,7 @@ export class GettingStartedPage extends EditorPane {
 		this.stepMediaComponent = $('.getting-started-media');
 		this.stepMediaComponent.id = generateUuid();
 
-		this.categoriesSlideDisposables = this._register(new DisposableStore());
+		// this.categoriesSlideDisposables = this._register(new DisposableStore());
 
 		this.detailsRenderer = new GettingStartedDetailsRenderer(this.fileService, this.notificationService, this.extensionService, this.languageService);
 
@@ -818,33 +818,53 @@ export class GettingStartedPage extends EditorPane {
 	}
 
 	protected createEditor(parent: HTMLElement) {
-		if (this.detailsPageScrollbar) { this.detailsPageScrollbar.dispose(); }
 		if (this.categoriesPageScrollbar) { this.categoriesPageScrollbar.dispose(); }
 
 		this.categoriesSlide = $('.gettingStartedSlideCategories.gettingStartedSlide');
 
-		const prevButton = $('button.prev-button.button-link', { 'x-dispatch': 'scrollPrev' }, $('span.scroll-button.codicon.codicon-chevron-left'), $('span.moreText', {}, localize('goBack', "Go Back")));
-		this.stepsSlide = $('.gettingStartedSlideDetails.gettingStartedSlide', {}, prevButton);
-
-		this.stepsContent = $('.gettingStartedDetailsContent', {});
-
-		this.detailsPageScrollbar = this._register(new DomScrollableElement(this.stepsContent, { className: 'full-height-scrollable', vertical: ScrollbarVisibility.Hidden }));
 		this.categoriesPageScrollbar = this._register(new DomScrollableElement(this.categoriesSlide, { className: 'full-height-scrollable categoriesScrollbar', vertical: ScrollbarVisibility.Hidden }));
 
-		this.stepsSlide.appendChild(this.detailsPageScrollbar.getDomNode());
-
-		const gettingStartedPage = $('.gettingStarted', {}, this.categoriesPageScrollbar.getDomNode(), this.stepsSlide);
+		const gettingStartedPage = $('.gettingStarted', {}, this.categoriesPageScrollbar.getDomNode());
 		this.container.appendChild(gettingStartedPage);
 
 		this.categoriesPageScrollbar.scanDomNode();
-		this.detailsPageScrollbar.scanDomNode();
 
 		parent.appendChild(this.container);
 	}
 
 	private async buildCategoriesSlide() {
+		while (this.categoriesSlide.firstChild) {
+			this.categoriesSlide.removeChild(this.categoriesSlide.firstChild);
+		}
 
-		this.categoriesSlideDisposables.clear();
+		const header = $('.header', {},
+			$('h1.product-name.caption', {}, this.productService.nameLong),
+			$('p.subtitle.description', {}, localize({ key: 'gettingStarted.editingEvolved', comment: ['Shown as subtitle on the Welcome page.'] }, "Editing evolved"))
+		);
+
+		const leftColumn = $('.categories-column.categories-column-left', {});
+		const rightColumn = $('.categories-column.categories-column-right', {});
+
+		const startList = this.buildStartList();
+		const recentList = this.buildRecentlyOpenedList();
+
+		const footer = $('.footer', {},
+			$('p.showOnStartup', {},
+				this.createShowOnStartupCheckbox()
+			)
+		);
+
+		// 只显示 Start 和 Recent
+		reset(leftColumn, startList.getDomElement());
+		reset(rightColumn, recentList.getDomElement());
+
+		reset(this.categoriesSlide, $('.gettingStartedCategoriesContainer', {}, header, leftColumn, rightColumn, footer));
+		this.categoriesPageScrollbar?.scanDomNode();
+		this.updateCategoryProgress();
+		this.registerDispatchListeners();
+	}
+
+	private createShowOnStartupCheckbox() {
 		const showOnStartupCheckbox = new Toggle({
 			icon: Codicon.check,
 			actionClassName: 'getting-started-checkbox',
@@ -856,131 +876,24 @@ export class GettingStartedPage extends EditorPane {
 		const showOnStartupLabel = $('label.caption', { for: 'showOnStartup' }, localize('welcomePage.showOnStartup', "Show welcome page on startup"));
 		const onShowOnStartupChanged = () => {
 			if (showOnStartupCheckbox.checked) {
-				this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'showOnStartupChecked', argument: undefined, walkthroughId: this.currentWalkthrough?.id });
+				this.telemetryService.publicLog2('gettingStarted.ActionExecuted');
 				this.configurationService.updateValue(configurationKey, 'welcomePage');
 			} else {
-				this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'showOnStartupUnchecked', argument: undefined, walkthroughId: this.currentWalkthrough?.id });
+				this.telemetryService.publicLog2('gettingStarted.ActionExecuted');
 				this.configurationService.updateValue(configurationKey, 'none');
 			}
 		};
-		this.categoriesSlideDisposables.add(showOnStartupCheckbox);
-		this.categoriesSlideDisposables.add(showOnStartupCheckbox.onChange(() => {
+		showOnStartupCheckbox.onChange(() => {
 			onShowOnStartupChanged();
-		}));
-		this.categoriesSlideDisposables.add(addDisposableListener(showOnStartupLabel, 'click', () => {
+		});
+		addDisposableListener(showOnStartupLabel, 'click', () => {
 			showOnStartupCheckbox.checked = !showOnStartupCheckbox.checked;
 			onShowOnStartupChanged();
-		}));
-
-		const header = $('.header', {},
-			$('h1.product-name.caption', {}, this.productService.nameLong),
-			$('p.subtitle.description', {}, localize({ key: 'gettingStarted.editingEvolved', comment: ['Shown as subtitle on the Welcome page.'] }, "Editing evolved"))
-		);
-
-		const leftColumn = $('.categories-column.categories-column-left', {},);
-		const rightColumn = $('.categories-column.categories-column-right', {},);
-
-		const startList = this.buildStartList();
-		const recentList = this.buildRecentlyOpenedList();
-		const gettingStartedList = this.buildGettingStartedWalkthroughsList();
-
-		const footer = $('.footer', {},
-			$('p.showOnStartup', {},
-				showOnStartupCheckbox.domNode,
-				showOnStartupLabel,
-			));
-
-		const layoutLists = () => {
-			if (gettingStartedList.itemCount) {
-				this.container.classList.remove('noWalkthroughs');
-				reset(rightColumn, gettingStartedList.getDomElement());
-			}
-			else {
-				this.container.classList.add('noWalkthroughs');
-				reset(rightColumn);
-			}
-			setTimeout(() => this.categoriesPageScrollbar?.scanDomNode(), 50);
-			layoutRecentList();
-		};
-
-		const layoutRecentList = () => {
-			if (this.container.classList.contains('noWalkthroughs')) {
-				recentList.setLimit(10);
-				reset(leftColumn, startList.getDomElement());
-				reset(rightColumn, recentList.getDomElement());
-			} else {
-				recentList.setLimit(5);
-				reset(leftColumn, startList.getDomElement(), recentList.getDomElement());
-			}
-		};
-
-		gettingStartedList.onDidChange(layoutLists);
-		layoutLists();
-
-		reset(this.categoriesSlide, $('.gettingStartedCategoriesContainer', {}, header, leftColumn, rightColumn, footer,));
-		this.categoriesPageScrollbar?.scanDomNode();
-
-		this.updateCategoryProgress();
-		this.registerDispatchListeners();
-
-		if (this.editorInput.selectedCategory) {
-			const showNewExperience = this.editorInput.selectedCategory === NEW_WELCOME_EXPERIENCE;
-			this.currentWalkthrough = this.gettingStartedCategories.find(category => category.id === this.editorInput.selectedCategory);
-
-			if (!this.currentWalkthrough) {
-				this.gettingStartedCategories = this.gettingStartedService.getWalkthroughs();
-				this.currentWalkthrough = showNewExperience ? this.gettingStartedService.getWalkthrough(this.editorInput.selectedCategory) : this.gettingStartedCategories.find(category => category.id === this.editorInput.selectedCategory);
-				if (this.currentWalkthrough) {
-					if (showNewExperience) {
-						this.buildNewCategorySlide(this.editorInput.selectedCategory, this.editorInput.selectedStep);
-					} else {
-						this.buildCategorySlide(this.editorInput.selectedCategory, this.editorInput.selectedStep);
-					}
-					this.setSlide('details');
-					return;
-				}
-			}
-			else {
-				if (showNewExperience) {
-					this.buildNewCategorySlide(this.editorInput.selectedCategory, this.editorInput.selectedStep);
-				} else {
-					this.buildCategorySlide(this.editorInput.selectedCategory, this.editorInput.selectedStep);
-				}
-				this.setSlide('details');
-				return;
-			}
-		}
-
-		const someStepsComplete = this.gettingStartedCategories.some(category => category.steps.find(s => s.done));
-		if (this.editorInput.showTelemetryNotice && this.productService.openToWelcomeMainPage) {
-			const telemetryNotice = $('p.telemetry-notice');
-			this.buildTelemetryFooter(telemetryNotice);
-			footer.appendChild(telemetryNotice);
-		} else if (!this.productService.openToWelcomeMainPage && !someStepsComplete && !this.hasScrolledToFirstCategory && this.showFeaturedWalkthrough) {
-			const firstSessionDateString = this.storageService.get(firstSessionDateStorageKey, StorageScope.APPLICATION) || new Date().toUTCString();
-			const daysSinceFirstSession = ((+new Date()) - (+new Date(firstSessionDateString))) / 1000 / 60 / 60 / 24;
-			const fistContentBehaviour = daysSinceFirstSession < 1 ? 'openToFirstCategory' : 'index';
-
-			if (fistContentBehaviour === 'openToFirstCategory') {
-				const exp = this.gettingStartedExperimentService.getCurrentExperiment();
-				const first = exp?.walkthroughId ? this.gettingStartedService.getWalkthrough(exp.walkthroughId) : this.gettingStartedCategories.filter(c => !c.when || this.contextService.contextMatchesRules(c.when))[0];
-				if (first) {
-					this.hasScrolledToFirstCategory = true;
-					this.currentWalkthrough = first;
-					this.editorInput.selectedCategory = this.currentWalkthrough?.id;
-					this.editorInput.walkthroughPageTitle = this.currentWalkthrough.walkthroughPageTitle;
-					if (first.id === NEW_WELCOME_EXPERIENCE) {
-						this.buildNewCategorySlide(this.editorInput.selectedCategory, undefined);
-					} else {
-						this.buildCategorySlide(this.editorInput.selectedCategory, undefined);
-					}
-					this.setSlide('details', true /* firstLaunch */);
-					return;
-				}
-			}
-		}
-
-		this.setSlide('categories');
+		});
+		const container = document.createElement('span');
+		container.appendChild(showOnStartupCheckbox.domNode);
+		container.appendChild(showOnStartupLabel);
+		return container;
 	}
 
 	private buildRecentlyOpenedList(): GettingStartedIndexList<RecentEntry> {
@@ -1092,92 +1005,92 @@ export class GettingStartedPage extends EditorPane {
 		return startList;
 	}
 
-	private buildGettingStartedWalkthroughsList(): GettingStartedIndexList<IResolvedWalkthrough> {
+	// private buildGettingStartedWalkthroughsList(): GettingStartedIndexList<IResolvedWalkthrough> {
 
-		const renderGetttingStaredWalkthrough = (category: IResolvedWalkthrough): HTMLElement => {
+	// 	const renderGetttingStaredWalkthrough = (category: IResolvedWalkthrough): HTMLElement => {
 
-			const renderNewBadge = (category.newItems || category.newEntry) && !category.isFeatured;
-			const newBadge = $('.new-badge', {});
-			if (category.newEntry) {
-				reset(newBadge, $('.new-category', {}, localize('new', "New")));
-			} else if (category.newItems) {
-				reset(newBadge, $('.new-items', {}, localize({ key: 'newItems', comment: ['Shown when a list of items has changed based on an update from a remote source'] }, "Updated")));
-			}
+	// 		const renderNewBadge = (category.newItems || category.newEntry) && !category.isFeatured;
+	// 		const newBadge = $('.new-badge', {});
+	// 		if (category.newEntry) {
+	// 			reset(newBadge, $('.new-category', {}, localize('new', "New")));
+	// 		} else if (category.newItems) {
+	// 			reset(newBadge, $('.new-items', {}, localize({ key: 'newItems', comment: ['Shown when a list of items has changed based on an update from a remote source'] }, "Updated")));
+	// 		}
 
-			const featuredBadge = $('.featured-badge', {});
-			const descriptionContent = $('.description-content', {},);
+	// 		const featuredBadge = $('.featured-badge', {});
+	// 		const descriptionContent = $('.description-content', {},);
 
-			if (category.isFeatured && this.showFeaturedWalkthrough) {
-				reset(featuredBadge, $('.featured', {}, $('span.featured-icon.codicon.codicon-star-full')));
-				reset(descriptionContent, ...renderLabelWithIcons(category.description));
-			}
+	// 		if (category.isFeatured && this.showFeaturedWalkthrough) {
+	// 			reset(featuredBadge, $('.featured', {}, $('span.featured-icon.codicon.codicon-star-full')));
+	// 			reset(descriptionContent, ...renderLabelWithIcons(category.description));
+	// 		}
 
-			const titleContent = $('h3.category-title.max-lines-3', { 'x-category-title-for': category.id });
-			reset(titleContent, ...renderLabelWithIcons(category.title));
+	// 		const titleContent = $('h3.category-title.max-lines-3', { 'x-category-title-for': category.id });
+	// 		reset(titleContent, ...renderLabelWithIcons(category.title));
 
-			return $('button.getting-started-category' + (category.isFeatured && this.showFeaturedWalkthrough ? '.featured' : ''),
-				{
-					'x-dispatch': 'selectCategory:' + category.id,
-					'title': category.description
-				},
-				featuredBadge,
-				$('.main-content', {},
-					this.iconWidgetFor(category),
-					titleContent,
-					renderNewBadge ? newBadge : $('.no-badge'),
-					$('a.codicon.codicon-close.hide-category-button', {
-						'tabindex': 0,
-						'x-dispatch': 'hideCategory:' + category.id,
-						'title': localize('close', "Hide"),
-						'role': 'button',
-						'aria-label': localize('closeAriaLabel', "Hide"),
-					}),
-				),
-				descriptionContent,
-				$('.category-progress', { 'x-data-category-id': category.id, },
-					$('.progress-bar-outer', { 'role': 'progressbar' },
-						$('.progress-bar-inner'))));
-		};
+	// 		return $('button.getting-started-category' + (category.isFeatured && this.showFeaturedWalkthrough ? '.featured' : ''),
+	// 			{
+	// 				'x-dispatch': 'selectCategory:' + category.id,
+	// 				'title': category.description
+	// 			},
+	// 			featuredBadge,
+	// 			$('.main-content', {},
+	// 				this.iconWidgetFor(category),
+	// 				titleContent,
+	// 				renderNewBadge ? newBadge : $('.no-badge'),
+	// 				$('a.codicon.codicon-close.hide-category-button', {
+	// 					'tabindex': 0,
+	// 					'x-dispatch': 'hideCategory:' + category.id,
+	// 					'title': localize('close', "Hide"),
+	// 					'role': 'button',
+	// 					'aria-label': localize('closeAriaLabel', "Hide"),
+	// 				}),
+	// 			),
+	// 			descriptionContent,
+	// 			$('.category-progress', { 'x-data-category-id': category.id, },
+	// 				$('.progress-bar-outer', { 'role': 'progressbar' },
+	// 					$('.progress-bar-inner'))));
+	// 	};
 
-		if (this.gettingStartedList) { this.gettingStartedList.dispose(); }
+	// 	if (this.gettingStartedList) { this.gettingStartedList.dispose(); }
 
-		const rankWalkthrough = (e: IResolvedWalkthrough) => {
-			let rank: number | null = e.order;
+	// 	const rankWalkthrough = (e: IResolvedWalkthrough) => {
+	// 		let rank: number | null = e.order;
 
-			if (e.isFeatured) { rank += 7; }
-			if (e.newEntry) { rank += 3; }
-			if (e.newItems) { rank += 2; }
-			if (e.recencyBonus) { rank += 4 * e.recencyBonus; }
+	// 		if (e.isFeatured) { rank += 7; }
+	// 		if (e.newEntry) { rank += 3; }
+	// 		if (e.newItems) { rank += 2; }
+	// 		if (e.recencyBonus) { rank += 4 * e.recencyBonus; }
 
-			if (this.getHiddenCategories().has(e.id)) { rank = null; }
-			return rank;
-		};
+	// 		if (this.getHiddenCategories().has(e.id)) { rank = null; }
+	// 		return rank;
+	// 	};
 
-		const gettingStartedList = this.gettingStartedList = new GettingStartedIndexList(
-			{
-				title: localize('walkthroughs', "Walkthroughs"),
-				klass: 'getting-started',
-				limit: 5,
-				footer: $('span.button-link.see-all-walkthroughs', { 'x-dispatch': 'seeAllWalkthroughs', 'tabindex': 0 }, localize('showAll', "More...")),
-				renderElement: renderGetttingStaredWalkthrough,
-				rankElement: rankWalkthrough,
-				contextService: this.contextService,
-			});
+	// 	const gettingStartedList = this.gettingStartedList = new GettingStartedIndexList(
+	// 		{
+	// 			title: localize('walkthroughs', "Walkthroughs"),
+	// 			klass: 'getting-started',
+	// 			limit: 5,
+	// 			footer: $('span.button-link.see-all-walkthroughs', { 'x-dispatch': 'seeAllWalkthroughs', 'tabindex': 0 }, localize('showAll', "More...")),
+	// 			renderElement: renderGetttingStaredWalkthrough,
+	// 			rankElement: rankWalkthrough,
+	// 			contextService: this.contextService,
+	// 		});
 
-		gettingStartedList.onDidChange(() => {
-			const hidden = this.getHiddenCategories();
-			const someWalkthroughsHidden = hidden.size || gettingStartedList.itemCount < this.gettingStartedCategories.filter(c => this.contextService.contextMatchesRules(c.when)).length;
-			this.container.classList.toggle('someWalkthroughsHidden', !!someWalkthroughsHidden);
-			this.registerDispatchListeners();
-			allWalkthroughsHiddenContext.bindTo(this.contextService).set(gettingStartedList.itemCount === 0);
-			this.updateCategoryProgress();
-		});
+	// 	gettingStartedList.onDidChange(() => {
+	// 		const hidden = this.getHiddenCategories();
+	// 		const someWalkthroughsHidden = hidden.size || gettingStartedList.itemCount < this.gettingStartedCategories.filter(c => this.contextService.contextMatchesRules(c.when)).length;
+	// 		this.container.classList.toggle('someWalkthroughsHidden', !!someWalkthroughsHidden);
+	// 		this.registerDispatchListeners();
+	// 		allWalkthroughsHiddenContext.bindTo(this.contextService).set(gettingStartedList.itemCount === 0);
+	// 		this.updateCategoryProgress();
+	// 	});
 
-		gettingStartedList.setEntries(this.gettingStartedCategories);
-		allWalkthroughsHiddenContext.bindTo(this.contextService).set(gettingStartedList.itemCount === 0);
+	// 	gettingStartedList.setEntries(this.gettingStartedCategories);
+	// 	allWalkthroughsHiddenContext.bindTo(this.contextService).set(gettingStartedList.itemCount === 0);
 
-		return gettingStartedList;
-	}
+	// 	return gettingStartedList;
+	// }
 
 	layout(size: Dimension) {
 		this.detailsScrollbar?.scanDomNode();
@@ -1417,459 +1330,459 @@ export class GettingStartedPage extends EditorPane {
 	}
 
 
-	private selectStepByIndex(newIndex: number, steps: IResolvedWalkthroughStep[], direction: number) {
-		this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'selectTask', argument: steps[newIndex].id, walkthroughId: this.currentWalkthrough?.id });
-		const currentIndex = steps.findIndex(step => step.id === this.editorInput.selectedStep);
-
-		// Update the selected step and build its media
-		this.selectSlide(steps[newIndex].id);
-
-		// update footer visibility
-		const footer = this.stepsContent.querySelector('.getting-started-footer') as HTMLElement;
-		if (footer && newIndex !== 0) {
-			footer.style.display = 'none';
-		} else if (footer) {
-			footer.style.display = 'block';
-		}
-
-		this.updateNavButtons(newIndex, steps);
-
-		// Update the active dot
-		const dots = this.stepsContent.querySelectorAll('.step-dot');
-		dots.forEach((dot, index) => {
-			if (index === newIndex) {
-				dot.classList.add('active');
-			} else {
-				dot.classList.remove('active');
-			}
-		});
-
-
-		if (currentIndex === newIndex) {
-			return; // No change
-		}
-
-		const slidesContainer = this.stepsContent.querySelector('.step-slides-container') as HTMLElement;
-		if (slidesContainer) {
-			// Apply the transform to move the slides
-			const slides = slidesContainer.querySelectorAll('.step-slide');
-
-			// First make all slides visible for the animation
-			slides.forEach((slide, index) => {
-				const slideElement = slide as HTMLElement;
-				// Position all slides in their starting positions
-				if (index === currentIndex) {
-					slideElement.style.display = 'block';
-					slideElement.style.transform = 'translateX(0)';
-				} else if (index === newIndex) {
-					slideElement.style.display = 'block';
-					slideElement.style.transform = `translateX(${direction < 0 ? '-100%' : '100%'})`;
-				} else {
-					slideElement.style.display = 'none';
-				}
-			});
-
-			// Force a reflow to ensure the initial positions are applied
-			slidesContainer.getBoundingClientRect();
-
-			// Now animate to the final positions
-			setTimeout(() => {
-				slides.forEach((slide, index) => {
-					const slideElement = slide as HTMLElement;
-					if (index === currentIndex) {
-						slideElement.style.transform = `translateX(${direction > 0 ? '-100%' : '100%'})`;
-						setTimeout(() => {
-							slideElement.style.display = 'none';
-						}, SLIDE_TRANSITION_TIME_MS);
-					} else if (index === newIndex) {
-						slideElement.style.transform = 'translateX(0)';
-					}
-				});
-			}, 20);
-		}
-	}
-
-	private updateNavButtons(newIndex: number, steps: IResolvedWalkthroughStep[]) {
-		const prevButton = this.stepsContent.querySelector('.button-link.navigation.back') as HTMLButtonElement;
-		if (newIndex === 0) {
-			if (prevButton) {
-				prevButton.classList.add('inactive');
-				prevButton.setAttribute('aria-hidden', 'true');
-				prevButton.setAttribute('tabindex', '-1');
-			}
-		}
-		else {
-			if (prevButton) {
-				prevButton.classList.remove('inactive');
-				prevButton.removeAttribute('aria-hidden');
-				prevButton.removeAttribute('tabindex');
-			}
-		}
-
-		// Update next button text for final slide
-		if (this.nextButton) {
-			const isLastSlide = newIndex === steps.length - 1;
-			const textNode = this.nextButton.firstChild as Text;
-			if (textNode && textNode.nodeType === Node.TEXT_NODE) {
-				textNode.textContent = isLastSlide
-					? localize('last', "Start coding")
-					: localize('next', "Next");
-			}
-			this.nextButton.setAttribute('aria-label', isLastSlide
-				? localize('lastStep', "Start coding")
-				: localize('nextStep', "Next"));
-		}
-	}
-
-	private buildNewCategorySlide(categoryID: string, selectedStep?: string) {
-		this.container.classList.add('newSlide');
-		if (this.detailsScrollbar) { this.detailsScrollbar.dispose(); }
-
-		this.detailsPageDisposables.clear();
-		this.mediaDisposables.clear();
-
-		const category = this.gettingStartedService.getWalkthrough(categoryID);
-		if (!category) {
-			throw Error('could not find category with ID ' + categoryID);
-		}
-
-		// Filter steps based on when context
-		const steps = category.steps.filter(step => this.contextService.contextMatchesRules(step.when));
-
-		const groupedSteps = new Map<string, IResolvedWalkthroughStep[]>();
-		steps.forEach(step => {
-			const prefixMatch = step.id.match(/^([^.]+)\./);
-			const prefix = prefixMatch ? prefixMatch[1] : step.id;
-			if (!groupedSteps.has(prefix)) {
-				groupedSteps.set(prefix, []);
-			}
-			groupedSteps.get(prefix)?.push(step);
-		});
-
-		// Create the slide container that will hold all step slides
-		const slidesContainer = $('.step-slides-container');
-
-		const navigationContainer = $('.step-dots-container');
-
-		// Add back button
-		const prevButton = $('button.button-link.navigation.back', {
-			'aria-label': localize('previousStep', "Previous Step"),
-			'tabindex': '0'
-		}, $('span.codicon.codicon-arrow-left'), localize('back', "Back"));
-
-		const dotsContainer = $('.dots-centered');
-		navigationContainer.appendChild(prevButton);
-		navigationContainer.appendChild(dotsContainer);
-
-		const allSlides: { id: string; steps: IResolvedWalkthroughStep[] }[] = [];
-		groupedSteps.forEach((stepsInGroup, prefix) => {
-			if (stepsInGroup.length === 1) {
-				allSlides.push({ id: stepsInGroup[0].id, steps: [stepsInGroup[0]] });
-			} else {
-				// For multi-steps, group them into a single slide
-				allSlides.push({ id: prefix, steps: stepsInGroup });
-			}
-		});
-
-		allSlides.forEach((slide, index) => {
-			// Create the slide element
-			const slideElement = $('.step-slide', { 'data-step': slide.id });
-
-			// Create the content container with flex layout
-			const slideContent = $('.step-slide-content');
-
-			// Text content column
-			const textContent = $('.step-text-content');
-
-			if (slide.steps.length === 1) {
-				// Single step case
-				const step = slide.steps[0];
-
-				// Create step title
-				const titleElement = $('h3.step-title', { 'x-step-title-for': step.id });
-				reset(titleElement, ...renderLabelWithIcons(step.title));
-				textContent.appendChild(titleElement);
-
-				// Create step description container
-				const descriptionContainer = $('.step-description', { 'x-step-description-for': step.id });
-				this.buildMarkdownDescription(descriptionContainer, step.description);
-				textContent.appendChild(descriptionContainer);
-			} else {
-				// Multi-step case - group steps with same prefix into a single slide
-				const multiStepContainer = $('.multi-step-container');
-
-				slide.steps.forEach((step, i) => {
-					const subStep = $('.sub-step', { 'data-sub-step-id': step.id });
-
-					this.detailsPageDisposables.add(addDisposableListener(subStep, 'click', () => {
-						this.selectSubStep(step.id);
-					}));
-					this.detailsPageDisposables.add(addDisposableListener(subStep, 'mouseenter', () => {
-						this.selectSubStep(step.id);
-					}));
-
-					const subStepTitleEl = $('.sub-step-title', {}, ...renderLabelWithIcons(step.title));
-					subStep.appendChild(subStepTitleEl);
-
-					const subStepDesc = $('.sub-step-description');
-					this.buildMarkdownDescription(subStepDesc, [step.description[0]]);
-					subStep.appendChild(subStepDesc);
-
-					if (i === 0 || step.id === this.editorInput.selectedStep) {
-						subStep.classList.add('active');
-					} else {
-						subStep.classList.remove('active');
-					}
-
-					multiStepContainer.appendChild(subStep);
-				});
-
-				// Get the linkedText of the lastStep
-				const lastStep = slide.steps[slide.steps.length - 1];
-				const linkedText = lastStep.description.length > 1 ? lastStep.description[1] : undefined;
-				if (linkedText) {
-					const descElement = $('.multi-step-action');
-					this.buildMarkdownDescription(descElement, [linkedText]);
-					multiStepContainer.appendChild(descElement);
-					const actionMessage = $('span.action-message');
-					const updatedText = parseLinkedText(copilotSettingsMessage);
-					this.buildMarkdownDescription(actionMessage, [updatedText]);
-					multiStepContainer.appendChild(actionMessage);
-				}
-
-				textContent.appendChild(multiStepContainer);
-			}
-
-			// Append text content to the slide
-			slideContent.appendChild(textContent);
-			slideElement.appendChild(slideContent);
-			slidesContainer.appendChild(slideElement);
-
-			// Create dot for this slide
-			const dot = $('button.step-dot', {
-				'data-step-dot-index': `${index}`,
-				'role': 'button'
-			});
-
-			// Set the initial active dot
-			if (index === 0) {
-				dot.classList.add('active');
-			}
-
-			dotsContainer.appendChild(dot);
-
-			this.detailsPageDisposables.add(addDisposableListener(dot, 'click', () => {
-				const currentIndex = this.getCurrentSlideIndex(allSlides);
-				if (currentIndex === index) {
-					return;
-				}
-				this.selectStepByIndex(index, allSlides.map(s => s.steps[0]), index > currentIndex ? 1 : -1);
-			}));
-		});
-
-		// Add next button
-		this.nextButton = $('button.button-link.navigation.next', {
-			'aria-label': localize('nextStep', "Next"),
-		}, localize('next', "Next"), $('span.codicon.codicon-arrow-right'));
-
-		navigationContainer.appendChild(this.nextButton);
-		this.detailsPageDisposables.add(addDisposableListener(prevButton, 'click', () => {
-			const currentIndex = this.getCurrentSlideIndex(allSlides);
-			if (currentIndex > 0) {
-				this.selectStepByIndex(currentIndex - 1, allSlides.map(s => s.steps[0]), -1);
-			}
-		}));
-
-		this.detailsPageDisposables.add(addDisposableListener(this.nextButton, 'click', () => {
-			const currentIndex = this.getCurrentSlideIndex(allSlides);
-			if (currentIndex < allSlides.length - 1) {
-				this.selectStepByIndex(currentIndex + 1, allSlides.map(s => s.steps[0]), 1);
-			} else {
-				this.scrollPrev();
-			}
-		}));
-
-		// Set the current walkthrough and step
-		this.currentWalkthrough = category;
-		this.editorInput.selectedCategory = categoryID;
-		this.editorInput.selectedStep = this.currentWalkthrough.steps[0].id;
-
-		// Category title and description
-		const categoryHeader = $('.category-header');
-		const categoryTitle = $('h2.category-title', { 'x-category-title-for': category.id });
-		reset(categoryTitle, ...renderLabelWithIcons(category.title));
-		categoryHeader.appendChild(categoryTitle);
-
-		const descriptionContainer = $('.category-description.description.max-lines-3', { 'x-category-description-for': category.id });
-		this.buildMarkdownDescription(descriptionContainer, parseDescription(category.description));
-		reset(descriptionContainer, ...renderLabelWithIcons(category.description));
-		categoryHeader.appendChild(descriptionContainer);
-
-		const categoryFooter = $('.getting-started-footer');
-		if (this.editorInput.showTelemetryNotice && getTelemetryLevel(this.configurationService) !== TelemetryLevel.NONE && this.productService.enableTelemetry) {
-			this.buildTelemetryFooter(categoryFooter);
-		}
-
-		// Build the container for the whole slide deck
-		const stepsContainer = $('.getting-started-steps-container', {},
-			categoryHeader,
-			slidesContainer,
-			navigationContainer,
-			categoryFooter,
-		);
-
-		// Set up the scroll container
-		this.detailsScrollbar = this._register(new DomScrollableElement(stepsContainer, { className: 'steps-container' }));
-		const stepListComponent = this.detailsScrollbar.getDomNode();
-
-		// Append to the content area
-		reset(this.stepsContent, stepListComponent);
-		stepListComponent.tabIndex = 0;
-		stepListComponent.focus();
-
-		this.selectStepByIndex(0, this.currentWalkthrough.steps, 1);
-
-		// Add keyboard navigation
-		this.detailsPageDisposables.add(addDisposableListener(stepListComponent, 'keydown', (e) => {
-			const event = new StandardKeyboardEvent(e);
-			if (event.keyCode === KeyCode.RightArrow) {
-				const currentIndex = this.getCurrentSlideIndex(allSlides);
-				if (currentIndex < allSlides.length - 1) {
-					this.selectStepByIndex(currentIndex + 1, allSlides.map(s => s.steps[0]), 1);
-				}
-				else {
-					this.scrollPrev();
-				}
-			} else if (event.keyCode === KeyCode.LeftArrow) {
-				const currentIndex = this.getCurrentSlideIndex(allSlides);
-				if (currentIndex > 0) {
-					this.selectStepByIndex(currentIndex - 1, allSlides.map(s => s.steps[0]), -1);
-				}
-			} else if (event.keyCode === KeyCode.UpArrow || event.keyCode === KeyCode.DownArrow) {
-				const currentIndex = this.getCurrentSlideIndex(allSlides);
-				if (currentIndex > 0) {
-					return;
-				}
-				this.navigateWithinMultiStepContainer(event.keyCode);
-			}
-		}));
-
-		// Register listeners for step selection
-		this.registerDispatchListeners();
-
-		this.detailsScrollbar.scanDomNode();
-		this.detailsPageScrollbar?.scanDomNode();
-	}
-
-	private navigateWithinMultiStepContainer(keyCode: KeyCode) {
-		const currentElement = this.container.querySelector(`.multi-step-container`) as HTMLElement;
-		if (!currentElement) { return; }
-		const currentSubStep = currentElement.querySelector('.sub-step.active');
-		const allElements = Array.from(this.container.querySelectorAll('.sub-step'));
-		const currentIndex = currentSubStep ? allElements.indexOf(currentSubStep as HTMLElement) : -1;
-
-		let targetElement: HTMLElement | undefined;
-		if (keyCode === KeyCode.UpArrow && currentIndex > 0) {
-			targetElement = allElements[currentIndex - 1] as HTMLElement;
-		} else if (keyCode === KeyCode.DownArrow && currentIndex < allElements.length - 1) {
-			targetElement = allElements[currentIndex + 1] as HTMLElement;
-		}
-
-		if (targetElement) {
-			const stepId = targetElement.getAttribute('data-sub-step-id');
-			this.selectSubStep(stepId!);
-			targetElement.focus();
-		}
-	}
-
-	private selectSubStep(selectedStepId: string) {
-		this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'selectTask', argument: selectedStepId, walkthroughId: this.currentWalkthrough?.id });
-		if (this.editorInput.selectedStep === selectedStepId) {
-			return;
-		}
-		this.editorInput.selectedStep = selectedStepId;
-
-		const multiStepContainer = this.container.querySelector('.multi-step-container');
-		if (!multiStepContainer) { return; }
-
-		const subSteps = multiStepContainer.querySelectorAll('.sub-step');
-		subSteps.forEach(subStepEl => {
-			const stepId = subStepEl.getAttribute('data-sub-step-id');
-			if (stepId === selectedStepId) {
-				subStepEl.classList.add('active');
-			} else {
-				subStepEl.classList.remove('active');
-			}
-		});
-
-		const prefixMatch = selectedStepId.match(/^([^.]+)\./);
-		const prefix = prefixMatch ? prefixMatch[1] : selectedStepId;
-		this.selectSlideWithPrefix(selectedStepId, prefix);
-
-		this.gettingStartedService.progressByEvent('stepSelected:' + selectedStepId);
-	}
-
-	private selectSlideWithPrefix(stepId: string, prefix: string) {
-		this.editorInput.selectedStep = stepId;
-
-		const step = this.currentWalkthrough?.steps.find(step => step.id === stepId);
-		if (!step) { return; }
-
-		const selectedSlide = this.stepsContent.querySelector(`.step-slide[data-step="${prefix}"]`);
-		if (selectedSlide) {
-			const selectedSlideContent = selectedSlide.querySelector('.step-slide-content');
-			this.mediaDisposables.clear();
-			this.stepDisposables.clear();
-			this.buildMediaComponent(this.editorInput.selectedStep);
-			selectedSlideContent?.appendChild(this.stepMediaComponent);
-			setTimeout(() => (selectedSlideContent as HTMLElement).focus(), 0);
-		}
-
-		this.gettingStartedService.progressByEvent('stepSelected:' + stepId);
-		this.detailsPageScrollbar?.scanDomNode();
-		this.detailsScrollbar?.scanDomNode();
-	}
-
-	private getCurrentSlideIndex(allSlides: { id: string; steps: IResolvedWalkthroughStep[] }[]): number {
-		if (!this.editorInput.selectedStep) {
-			return 0;
-		}
-
-		// Check if the selected step is directly a slide ID
-		const directMatch = allSlides.findIndex(slide => slide.id === this.editorInput.selectedStep);
-		if (directMatch !== -1) {
-			return directMatch;
-		}
-
-		// Otherwise, find which slide contains the step as a sub-step
-		return allSlides.findIndex(slide =>
-			slide.steps.some(step => step.id === this.editorInput.selectedStep)
-		);
-	}
-
-	private selectSlide(stepId: string) {
-		this.editorInput.selectedStep = stepId;
-
-		const step = this.currentWalkthrough?.steps.find(step => step.id === stepId);
-		if (!step) { return; }
-
-
-		const effectiveStepId = stepId.match(/^([^.]+)\./)?.[1] ?? stepId;
-		const selectedSlide = this.stepsContent.querySelector(`.step-slide[data-step="${effectiveStepId}"]`);
-
-		if (selectedSlide) {
-			const selectedSlideContent = selectedSlide.querySelector('.step-slide-content');
-			this.mediaDisposables.clear();
-			this.stepDisposables.clear();
-			this.buildMediaComponent(this.editorInput.selectedStep);
-			selectedSlideContent?.appendChild(this.stepMediaComponent);
-			setTimeout(() => (selectedSlideContent as HTMLElement).focus(), 0);
-		}
-
-		this.gettingStartedService.progressByEvent('stepSelected:' + stepId);
-		this.detailsPageScrollbar?.scanDomNode();
-		this.detailsScrollbar?.scanDomNode();
-	}
+	// private selectStepByIndex(newIndex: number, steps: IResolvedWalkthroughStep[], direction: number) {
+	// 	this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'selectTask', argument: steps[newIndex].id, walkthroughId: this.currentWalkthrough?.id });
+	// 	const currentIndex = steps.findIndex(step => step.id === this.editorInput.selectedStep);
+
+	// 	// Update the selected step and build its media
+	// 	this.selectSlide(steps[newIndex].id);
+
+	// 	// update footer visibility
+	// 	const footer = this.stepsContent.querySelector('.getting-started-footer') as HTMLElement;
+	// 	if (footer && newIndex !== 0) {
+	// 		footer.style.display = 'none';
+	// 	} else if (footer) {
+	// 		footer.style.display = 'block';
+	// 	}
+
+	// 	this.updateNavButtons(newIndex, steps);
+
+	// 	// Update the active dot
+	// 	const dots = this.stepsContent.querySelectorAll('.step-dot');
+	// 	dots.forEach((dot, index) => {
+	// 		if (index === newIndex) {
+	// 			dot.classList.add('active');
+	// 		} else {
+	// 			dot.classList.remove('active');
+	// 		}
+	// 	});
+
+
+	// 	if (currentIndex === newIndex) {
+	// 		return; // No change
+	// 	}
+
+	// 	const slidesContainer = this.stepsContent.querySelector('.step-slides-container') as HTMLElement;
+	// 	if (slidesContainer) {
+	// 		// Apply the transform to move the slides
+	// 		const slides = slidesContainer.querySelectorAll('.step-slide');
+
+	// 		// First make all slides visible for the animation
+	// 		slides.forEach((slide, index) => {
+	// 			const slideElement = slide as HTMLElement;
+	// 			// Position all slides in their starting positions
+	// 			if (index === currentIndex) {
+	// 				slideElement.style.display = 'block';
+	// 				slideElement.style.transform = 'translateX(0)';
+	// 			} else if (index === newIndex) {
+	// 				slideElement.style.display = 'block';
+	// 				slideElement.style.transform = `translateX(${direction < 0 ? '-100%' : '100%'})`;
+	// 			} else {
+	// 				slideElement.style.display = 'none';
+	// 			}
+	// 		});
+
+	// 		// Force a reflow to ensure the initial positions are applied
+	// 		slidesContainer.getBoundingClientRect();
+
+	// 		// Now animate to the final positions
+	// 		setTimeout(() => {
+	// 			slides.forEach((slide, index) => {
+	// 				const slideElement = slide as HTMLElement;
+	// 				if (index === currentIndex) {
+	// 					slideElement.style.transform = `translateX(${direction > 0 ? '-100%' : '100%'})`;
+	// 					setTimeout(() => {
+	// 						slideElement.style.display = 'none';
+	// 					}, SLIDE_TRANSITION_TIME_MS);
+	// 				} else if (index === newIndex) {
+	// 					slideElement.style.transform = 'translateX(0)';
+	// 				}
+	// 			});
+	// 		}, 20);
+	// 	}
+	// }
+
+	// private updateNavButtons(newIndex: number, steps: IResolvedWalkthroughStep[]) {
+	// 	const prevButton = this.stepsContent.querySelector('.button-link.navigation.back') as HTMLButtonElement;
+	// 	if (newIndex === 0) {
+	// 		if (prevButton) {
+	// 			prevButton.classList.add('inactive');
+	// 			prevButton.setAttribute('aria-hidden', 'true');
+	// 			prevButton.setAttribute('tabindex', '-1');
+	// 		}
+	// 	}
+	// 	else {
+	// 		if (prevButton) {
+	// 			prevButton.classList.remove('inactive');
+	// 			prevButton.removeAttribute('aria-hidden');
+	// 			prevButton.removeAttribute('tabindex');
+	// 		}
+	// 	}
+
+	// 	// Update next button text for final slide
+	// 	if (this.nextButton) {
+	// 		const isLastSlide = newIndex === steps.length - 1;
+	// 		const textNode = this.nextButton.firstChild as Text;
+	// 		if (textNode && textNode.nodeType === Node.TEXT_NODE) {
+	// 			textNode.textContent = isLastSlide
+	// 				? localize('last', "Start coding")
+	// 				: localize('next', "Next");
+	// 		}
+	// 		this.nextButton.setAttribute('aria-label', isLastSlide
+	// 			? localize('lastStep', "Start coding")
+	// 			: localize('nextStep', "Next"));
+	// 	}
+	// }
+
+	// private buildNewCategorySlide(categoryID: string, selectedStep?: string) {
+	// 	this.container.classList.add('newSlide');
+	// 	if (this.detailsScrollbar) { this.detailsScrollbar.dispose(); }
+
+	// 	this.detailsPageDisposables.clear();
+	// 	this.mediaDisposables.clear();
+
+	// 	const category = this.gettingStartedService.getWalkthrough(categoryID);
+	// 	if (!category) {
+	// 		throw Error('could not find category with ID ' + categoryID);
+	// 	}
+
+	// 	// Filter steps based on when context
+	// 	const steps = category.steps.filter(step => this.contextService.contextMatchesRules(step.when));
+
+	// 	const groupedSteps = new Map<string, IResolvedWalkthroughStep[]>();
+	// 	steps.forEach(step => {
+	// 		const prefixMatch = step.id.match(/^([^.]+)\./);
+	// 		const prefix = prefixMatch ? prefixMatch[1] : step.id;
+	// 		if (!groupedSteps.has(prefix)) {
+	// 			groupedSteps.set(prefix, []);
+	// 		}
+	// 		groupedSteps.get(prefix)?.push(step);
+	// 	});
+
+	// 	// Create the slide container that will hold all step slides
+	// 	const slidesContainer = $('.step-slides-container');
+
+	// 	const navigationContainer = $('.step-dots-container');
+
+	// 	// Add back button
+	// 	const prevButton = $('button.button-link.navigation.back', {
+	// 		'aria-label': localize('previousStep', "Previous Step"),
+	// 		'tabindex': '0'
+	// 	}, $('span.codicon.codicon-arrow-left'), localize('back', "Back"));
+
+	// 	const dotsContainer = $('.dots-centered');
+	// 	navigationContainer.appendChild(prevButton);
+	// 	navigationContainer.appendChild(dotsContainer);
+
+	// 	const allSlides: { id: string; steps: IResolvedWalkthroughStep[] }[] = [];
+	// 	groupedSteps.forEach((stepsInGroup, prefix) => {
+	// 		if (stepsInGroup.length === 1) {
+	// 			allSlides.push({ id: stepsInGroup[0].id, steps: [stepsInGroup[0]] });
+	// 		} else {
+	// 			// For multi-steps, group them into a single slide
+	// 			allSlides.push({ id: prefix, steps: stepsInGroup });
+	// 		}
+	// 	});
+
+	// 	allSlides.forEach((slide, index) => {
+	// 		// Create the slide element
+	// 		const slideElement = $('.step-slide', { 'data-step': slide.id });
+
+	// 		// Create the content container with flex layout
+	// 		const slideContent = $('.step-slide-content');
+
+	// 		// Text content column
+	// 		const textContent = $('.step-text-content');
+
+	// 		if (slide.steps.length === 1) {
+	// 			// Single step case
+	// 			const step = slide.steps[0];
+
+	// 			// Create step title
+	// 			const titleElement = $('h3.step-title', { 'x-step-title-for': step.id });
+	// 			reset(titleElement, ...renderLabelWithIcons(step.title));
+	// 			textContent.appendChild(titleElement);
+
+	// 			// Create step description container
+	// 			const descriptionContainer = $('.step-description', { 'x-step-description-for': step.id });
+	// 			this.buildMarkdownDescription(descriptionContainer, step.description);
+	// 			textContent.appendChild(descriptionContainer);
+	// 		} else {
+	// 			// Multi-step case - group steps with same prefix into a single slide
+	// 			const multiStepContainer = $('.multi-step-container');
+
+	// 			slide.steps.forEach((step, i) => {
+	// 				const subStep = $('.sub-step', { 'data-sub-step-id': step.id });
+
+	// 				this.detailsPageDisposables.add(addDisposableListener(subStep, 'click', () => {
+	// 					this.selectSubStep(step.id);
+	// 				}));
+	// 				this.detailsPageDisposables.add(addDisposableListener(subStep, 'mouseenter', () => {
+	// 					this.selectSubStep(step.id);
+	// 				}));
+
+	// 				const subStepTitleEl = $('.sub-step-title', {}, ...renderLabelWithIcons(step.title));
+	// 				subStep.appendChild(subStepTitleEl);
+
+	// 				const subStepDesc = $('.sub-step-description');
+	// 				this.buildMarkdownDescription(subStepDesc, [step.description[0]]);
+	// 				subStep.appendChild(subStepDesc);
+
+	// 				if (i === 0 || step.id === this.editorInput.selectedStep) {
+	// 					subStep.classList.add('active');
+	// 				} else {
+	// 					subStep.classList.remove('active');
+	// 				}
+
+	// 				multiStepContainer.appendChild(subStep);
+	// 			});
+
+	// 			// Get the linkedText of the lastStep
+	// 			const lastStep = slide.steps[slide.steps.length - 1];
+	// 			const linkedText = lastStep.description.length > 1 ? lastStep.description[1] : undefined;
+	// 			if (linkedText) {
+	// 				const descElement = $('.multi-step-action');
+	// 				this.buildMarkdownDescription(descElement, [linkedText]);
+	// 				multiStepContainer.appendChild(descElement);
+	// 				const actionMessage = $('span.action-message');
+	// 				const updatedText = parseLinkedText(copilotSettingsMessage);
+	// 				this.buildMarkdownDescription(actionMessage, [updatedText]);
+	// 				multiStepContainer.appendChild(actionMessage);
+	// 			}
+
+	// 			textContent.appendChild(multiStepContainer);
+	// 		}
+
+	// 		// Append text content to the slide
+	// 		slideContent.appendChild(textContent);
+	// 		slideElement.appendChild(slideContent);
+	// 		slidesContainer.appendChild(slideElement);
+
+	// 		// Create dot for this slide
+	// 		const dot = $('button.step-dot', {
+	// 			'data-step-dot-index': `${index}`,
+	// 			'role': 'button'
+	// 		});
+
+	// 		// Set the initial active dot
+	// 		if (index === 0) {
+	// 			dot.classList.add('active');
+	// 		}
+
+	// 		dotsContainer.appendChild(dot);
+
+	// 		this.detailsPageDisposables.add(addDisposableListener(dot, 'click', () => {
+	// 			const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 			if (currentIndex === index) {
+	// 				return;
+	// 			}
+	// 			this.selectStepByIndex(index, allSlides.map(s => s.steps[0]), index > currentIndex ? 1 : -1);
+	// 		}));
+	// 	});
+
+	// 	// Add next button
+	// 	this.nextButton = $('button.button-link.navigation.next', {
+	// 		'aria-label': localize('nextStep', "Next"),
+	// 	}, localize('next', "Next"), $('span.codicon.codicon-arrow-right'));
+
+	// 	navigationContainer.appendChild(this.nextButton);
+	// 	this.detailsPageDisposables.add(addDisposableListener(prevButton, 'click', () => {
+	// 		const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 		if (currentIndex > 0) {
+	// 			this.selectStepByIndex(currentIndex - 1, allSlides.map(s => s.steps[0]), -1);
+	// 		}
+	// 	}));
+
+	// 	this.detailsPageDisposables.add(addDisposableListener(this.nextButton, 'click', () => {
+	// 		const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 		if (currentIndex < allSlides.length - 1) {
+	// 			this.selectStepByIndex(currentIndex + 1, allSlides.map(s => s.steps[0]), 1);
+	// 		} else {
+	// 			this.scrollPrev();
+	// 		}
+	// 	}));
+
+	// 	// Set the current walkthrough and step
+	// 	this.currentWalkthrough = category;
+	// 	this.editorInput.selectedCategory = categoryID;
+	// 	this.editorInput.selectedStep = this.currentWalkthrough.steps[0].id;
+
+	// 	// Category title and description
+	// 	const categoryHeader = $('.category-header');
+	// 	const categoryTitle = $('h2.category-title', { 'x-category-title-for': category.id });
+	// 	reset(categoryTitle, ...renderLabelWithIcons(category.title));
+	// 	categoryHeader.appendChild(categoryTitle);
+
+	// 	const descriptionContainer = $('.category-description.description.max-lines-3', { 'x-category-description-for': category.id });
+	// 	this.buildMarkdownDescription(descriptionContainer, parseDescription(category.description));
+	// 	reset(descriptionContainer, ...renderLabelWithIcons(category.description));
+	// 	categoryHeader.appendChild(descriptionContainer);
+
+	// 	const categoryFooter = $('.getting-started-footer');
+	// 	if (this.editorInput.showTelemetryNotice && getTelemetryLevel(this.configurationService) !== TelemetryLevel.NONE && this.productService.enableTelemetry) {
+	// 		this.buildTelemetryFooter(categoryFooter);
+	// 	}
+
+	// 	// Build the container for the whole slide deck
+	// 	const stepsContainer = $('.getting-started-steps-container', {},
+	// 		categoryHeader,
+	// 		slidesContainer,
+	// 		navigationContainer,
+	// 		categoryFooter,
+	// 	);
+
+	// 	// Set up the scroll container
+	// 	this.detailsScrollbar = this._register(new DomScrollableElement(stepsContainer, { className: 'steps-container' }));
+	// 	const stepListComponent = this.detailsScrollbar.getDomNode();
+
+	// 	// Append to the content area
+	// 	reset(this.stepsContent, stepListComponent);
+	// 	stepListComponent.tabIndex = 0;
+	// 	stepListComponent.focus();
+
+	// 	this.selectStepByIndex(0, this.currentWalkthrough.steps, 1);
+
+	// 	// Add keyboard navigation
+	// 	this.detailsPageDisposables.add(addDisposableListener(stepListComponent, 'keydown', (e) => {
+	// 		const event = new StandardKeyboardEvent(e);
+	// 		if (event.keyCode === KeyCode.RightArrow) {
+	// 			const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 			if (currentIndex < allSlides.length - 1) {
+	// 				this.selectStepByIndex(currentIndex + 1, allSlides.map(s => s.steps[0]), 1);
+	// 			}
+	// 			else {
+	// 				this.scrollPrev();
+	// 			}
+	// 		} else if (event.keyCode === KeyCode.LeftArrow) {
+	// 			const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 			if (currentIndex > 0) {
+	// 				this.selectStepByIndex(currentIndex - 1, allSlides.map(s => s.steps[0]), -1);
+	// 			}
+	// 		} else if (event.keyCode === KeyCode.UpArrow || event.keyCode === KeyCode.DownArrow) {
+	// 			const currentIndex = this.getCurrentSlideIndex(allSlides);
+	// 			if (currentIndex > 0) {
+	// 				return;
+	// 			}
+	// 			this.navigateWithinMultiStepContainer(event.keyCode);
+	// 		}
+	// 	}));
+
+	// 	// Register listeners for step selection
+	// 	this.registerDispatchListeners();
+
+	// 	this.detailsScrollbar.scanDomNode();
+	// 	this.detailsPageScrollbar?.scanDomNode();
+	// }
+
+	// private navigateWithinMultiStepContainer(keyCode: KeyCode) {
+	// 	const currentElement = this.container.querySelector(`.multi-step-container`) as HTMLElement;
+	// 	if (!currentElement) { return; }
+	// 	const currentSubStep = currentElement.querySelector('.sub-step.active');
+	// 	const allElements = Array.from(this.container.querySelectorAll('.sub-step'));
+	// 	const currentIndex = currentSubStep ? allElements.indexOf(currentSubStep as HTMLElement) : -1;
+
+	// 	let targetElement: HTMLElement | undefined;
+	// 	if (keyCode === KeyCode.UpArrow && currentIndex > 0) {
+	// 		targetElement = allElements[currentIndex - 1] as HTMLElement;
+	// 	} else if (keyCode === KeyCode.DownArrow && currentIndex < allElements.length - 1) {
+	// 		targetElement = allElements[currentIndex + 1] as HTMLElement;
+	// 	}
+
+	// 	if (targetElement) {
+	// 		const stepId = targetElement.getAttribute('data-sub-step-id');
+	// 		this.selectSubStep(stepId!);
+	// 		targetElement.focus();
+	// 	}
+	// }
+
+	// private selectSubStep(selectedStepId: string) {
+	// 	this.telemetryService.publicLog2<GettingStartedActionEvent, GettingStartedActionClassification>('gettingStarted.ActionExecuted', { command: 'selectTask', argument: selectedStepId, walkthroughId: this.currentWalkthrough?.id });
+	// 	if (this.editorInput.selectedStep === selectedStepId) {
+	// 		return;
+	// 	}
+	// 	this.editorInput.selectedStep = selectedStepId;
+
+	// 	const multiStepContainer = this.container.querySelector('.multi-step-container');
+	// 	if (!multiStepContainer) { return; }
+
+	// 	const subSteps = multiStepContainer.querySelectorAll('.sub-step');
+	// 	subSteps.forEach(subStepEl => {
+	// 		const stepId = subStepEl.getAttribute('data-sub-step-id');
+	// 		if (stepId === selectedStepId) {
+	// 			subStepEl.classList.add('active');
+	// 		} else {
+	// 			subStepEl.classList.remove('active');
+	// 		}
+	// 	});
+
+	// 	const prefixMatch = selectedStepId.match(/^([^.]+)\./);
+	// 	const prefix = prefixMatch ? prefixMatch[1] : selectedStepId;
+	// 	this.selectSlideWithPrefix(selectedStepId, prefix);
+
+	// 	this.gettingStartedService.progressByEvent('stepSelected:' + selectedStepId);
+	// }
+
+	// private selectSlideWithPrefix(stepId: string, prefix: string) {
+	// 	this.editorInput.selectedStep = stepId;
+
+	// 	const step = this.currentWalkthrough?.steps.find(step => step.id === stepId);
+	// 	if (!step) { return; }
+
+	// 	const selectedSlide = this.stepsContent.querySelector(`.step-slide[data-step="${prefix}"]`);
+	// 	if (selectedSlide) {
+	// 		const selectedSlideContent = selectedSlide.querySelector('.step-slide-content');
+	// 		this.mediaDisposables.clear();
+	// 		this.stepDisposables.clear();
+	// 		this.buildMediaComponent(this.editorInput.selectedStep);
+	// 		selectedSlideContent?.appendChild(this.stepMediaComponent);
+	// 		setTimeout(() => (selectedSlideContent as HTMLElement).focus(), 0);
+	// 	}
+
+	// 	this.gettingStartedService.progressByEvent('stepSelected:' + stepId);
+	// 	this.detailsPageScrollbar?.scanDomNode();
+	// 	this.detailsScrollbar?.scanDomNode();
+	// }
+
+	// private getCurrentSlideIndex(allSlides: { id: string; steps: IResolvedWalkthroughStep[] }[]): number {
+	// 	if (!this.editorInput.selectedStep) {
+	// 		return 0;
+	// 	}
+
+	// 	// Check if the selected step is directly a slide ID
+	// 	const directMatch = allSlides.findIndex(slide => slide.id === this.editorInput.selectedStep);
+	// 	if (directMatch !== -1) {
+	// 		return directMatch;
+	// 	}
+
+	// 	// Otherwise, find which slide contains the step as a sub-step
+	// 	return allSlides.findIndex(slide =>
+	// 		slide.steps.some(step => step.id === this.editorInput.selectedStep)
+	// 	);
+	// }
+
+	// private selectSlide(stepId: string) {
+	// 	this.editorInput.selectedStep = stepId;
+
+	// 	const step = this.currentWalkthrough?.steps.find(step => step.id === stepId);
+	// 	if (!step) { return; }
+
+
+	// 	const effectiveStepId = stepId.match(/^([^.]+)\./)?.[1] ?? stepId;
+	// 	const selectedSlide = this.stepsContent.querySelector(`.step-slide[data-step="${effectiveStepId}"]`);
+
+	// 	if (selectedSlide) {
+	// 		const selectedSlideContent = selectedSlide.querySelector('.step-slide-content');
+	// 		this.mediaDisposables.clear();
+	// 		this.stepDisposables.clear();
+	// 		this.buildMediaComponent(this.editorInput.selectedStep);
+	// 		selectedSlideContent?.appendChild(this.stepMediaComponent);
+	// 		setTimeout(() => (selectedSlideContent as HTMLElement).focus(), 0);
+	// 	}
+
+	// 	this.gettingStartedService.progressByEvent('stepSelected:' + stepId);
+	// 	this.detailsPageScrollbar?.scanDomNode();
+	// 	this.detailsScrollbar?.scanDomNode();
+	// }
 
 	private buildCategorySlide(categoryID: string, selectedStep?: string) {
 		this.container.classList.remove('newSlide');
