@@ -94,13 +94,13 @@ export interface IProductConfiguration {
 		assignmentContextTelemetryPropertyName: string;
 	};
 
-	readonly extensionsGallery?: {
-		readonly serviceUrl: string;
-		readonly controlUrl: string;
-		readonly extensionUrlTemplate: string;
-		readonly resourceUrlTemplate: string;
-		readonly nlsBaseUrl: string;
-		readonly accessSKUs?: string[];
+	extensionsGallery?: {
+		serviceUrl: string;
+		controlUrl: string;
+		extensionUrlTemplate: string;
+		resourceUrlTemplate: string;
+		nlsBaseUrl: string;
+		accessSKUs?: string[];
 	};
 
 	readonly extensionPublisherOrgs?: readonly string[];
