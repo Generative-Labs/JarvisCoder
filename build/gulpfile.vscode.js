@@ -575,19 +575,19 @@ gulp.task('brand-darwin-app', async function brandDarwinAppTask(done) {
 	// 1. rename .app folder
 	if (fs.existsSync(oldAppPath) && !fs.existsSync(newAppPath)) {
 		fs.renameSync(oldAppPath, newAppPath);
-		console.log(`重命名 .app 文件夹为: ${appName}.app`);
+		console.log(` rename .app folder to: ${appName}.app`);
 	}
 
 	// 2. rename executable file
 	if (fs.existsSync(oldExecPath) && !fs.existsSync(newExecPath)) {
 		fs.renameSync(oldExecPath, newExecPath);
-		console.log(`重命名可执行文件为: ${appName}`);
+		console.log(` rename executable file to: ${appName}`);
 	}
 
 	// 3. modify Info.plist
 	if (fs.existsSync(plistPath)) {
-		let info = fs.readFileSync(plistPath, 'utf8');
-		let obj = plist.parse(info);
+		const info = fs.readFileSync(plistPath, 'utf8');
+		const obj = plist.parse(info);
 
 		// replace main fields
 		obj.CFBundleName = appName;
@@ -595,10 +595,12 @@ gulp.task('brand-darwin-app', async function brandDarwinAppTask(done) {
 		obj.CFBundleExecutable = appName;
 		obj.CFBundleIdentifier = `com.aicoder.${appName.replace(/\s+/g, '').toLowerCase()}`;
 		obj.CFBundleURLName = appName;
-		if (obj.CFBundleIconFile) obj.CFBundleIconFile = `${appName}.icns`;
+		if (obj.CFBundleIconFile) {
+			obj.CFBundleIconFile = `${appName}.icns`;
+		}
 
 		// replace all VSCode/Code - OSS/VS Code
-		let plistStr = plist.build(obj)
+		const plistStr = plist.build(obj)
 			.replace(/Code - OSS/g, appName)
 			.replace(/code-oss/g, appName.replace(/\s+/g, '-').toLowerCase())
 			.replace(/VS Code/g, appName);
@@ -643,15 +645,15 @@ gulp.task('brand-darwin-helpers', async function brandDarwinHelpersTask(done) {
 		// 3. modify Helper Info.plist
 		const plistPath = path.join(newAppPath, 'Contents', 'Info.plist');
 		if (fs.existsSync(plistPath)) {
-			let info = fs.readFileSync(plistPath, 'utf8');
-			let obj = plist.parse(info);
+			const info = fs.readFileSync(plistPath, 'utf8');
+			const obj = plist.parse(info);
 
 			obj.CFBundleName = `${appName} ${helperType}`;
 			obj.CFBundleDisplayName = `${appName} ${helperType}`;
 			obj.CFBundleExecutable = `${appName} ${helperType}`;
 			obj.CFBundleIdentifier = `com.aicoder.${appName.replace(/\\s+/g, '').toLowerCase()}.${helperType.replace(/[^a-zA-Z]/g, '').toLowerCase()}`;
 
-			let plistStr = plist.build(obj)
+			const plistStr = plist.build(obj)
 				.replace(/Code - OSS/g, appName)
 				.replace(/code-oss/g, appName.replace(/\\s+/g, '-').toLowerCase())
 				.replace(/VS Code/g, appName);
