@@ -74,4 +74,16 @@ else {
 	}
 }
 
+// todo should fix this
+Object.assign(product, {
+	extensionsGallery: {
+		serviceUrl: 'https://open-vsx.org/vscode/gallery',
+		itemUrl: 'https://open-vsx.org/vscode/item',
+		controlUrl: 'https://open-vsx.org/vscode/control',
+		recommendationsUrl: 'https://open-vsx.org/vscode/recommendations',
+		resourceUrlTemplate: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}/Microsoft.VisualStudio.Code.Manifest',
+		assetUrlTemplate: 'https://open-vsx.org/vscode/asset/{publisher}/{name}/{version}',
+		fallbackAssetUrlTemplate: 'https://open-vsx.org/vscode/fallback/{publisher}/{name}/{version}'
+	}
+});
 export default product;
