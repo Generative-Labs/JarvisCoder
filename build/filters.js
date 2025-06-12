@@ -27,6 +27,7 @@ module.exports.all = [
 	'!test/**/out/**',
 	'!**/node_modules/**',
 	'!extensions/ai-coder/**.config.js',
+	'!*.patch',
 ];
 
 module.exports.unicodeFilter = [
