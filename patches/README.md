@@ -1,18 +1,18 @@
-# Patch 文件说明
+# Patch Files Documentation
 
 ## gettingStarted.patch
 
-这个 patch 文件包含了 `gettingStarted.ts` 的自定义修改，用于防止在同步 stream 分支时被覆盖。
+This patch file contains custom modifications to `gettingStarted.ts` to prevent it from being overwritten when syncing with the stream branch.
 
-### 使用方法
+### Usage
 
-1. 在同步 stream 分支后，应用 patch：
+1. After syncing with the stream branch, apply the patch:
 
    ```bash
    git apply patches/gettingStarted.patch
    ```
 
-2. 如果出现冲突，手动解决冲突后：
+2. If conflicts occur, resolve them manually and then:
    ```bash
    git add src/vs/workbench/contrib/welcomeGettingStarted/browser/gettingStarted.ts
    git commit -m "chore: reapply getting started page customization"
@@ -20,17 +20,17 @@
 
 ## product.patch
 
-这个 patch 文件包含了 `product.json` 的自定义修改，用于自定义产品信息。
+This patch file contains custom modifications to `product.json` for product information customization.
 
-### 使用方法
+### Usage
 
-1. 在同步 stream 分支后，应用 patch：
+1. After syncing with the stream branch, apply the patch:
 
    ```bash
    git apply patches/product.patch
    ```
 
-2. 如果出现冲突，手动解决冲突后：
+2. If conflicts occur, resolve them manually and then:
    ```bash
    git add product.json
    git commit -m "chore: reapply product customization"
@@ -38,28 +38,28 @@
 
 ## product_type.patch
 
-这个 patch 文件包含了 `product.type.ts` 的自定义修改，用于自定义产品类型定义。
+This patch file contains custom modifications to `product.type.ts` for product type definition customization.
 
-### 使用方法
+### Usage
 
-1. 在同步 stream 分支后，应用 patch：
+1. After syncing with the stream branch, apply the patch:
 
    ```bash
    git apply patches/product_type.patch
    ```
 
-2. 如果出现冲突，手动解决冲突后：
+2. If conflicts occur, resolve them manually and then:
    ```bash
    git add src/vs/platform/product/common/product.type.ts
    git commit -m "chore: reapply product type customization"
    ```
 
-### 注意事项
+### Notes
 
-- 每次同步 stream 分支后都需要重新应用所有 patch
-- 如果 patch 文件失效，需要重新生成
-- 建议在应用 patch 前先备份当前修改
-- 应用 patch 的顺序建议为：
+- All patches need to be reapplied after each sync with the stream branch
+- If a patch file becomes invalid, it needs to be regenerated
+- It's recommended to backup current modifications before applying patches
+- Recommended patch application order:
   1. product_type.patch
   2. product.patch
   3. gettingStarted.patch
