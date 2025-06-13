@@ -35,6 +35,9 @@ const { compileNonNativeExtensionsBuildTask, compileNativeExtensionsBuildTask, c
 const { promisify } = require('util');
 const glob = promisify(require('glob'));
 const rcedit = promisify(require('rcedit'));
+const plist = require('plist');
+
+const appName = product.nameLong || 'Code - OSS Dev';
 
 // Build
 const vscodeEntryPoints = [
@@ -558,3 +561,106 @@ gulp.task('vscode-translations-import', function () {
 });
 
 // #endregion
+
+// === auto brand darwin app and Info.plist ===
+gulp.task('brand-darwin-app', async function brandDarwinAppTask(done) {
+	const appName = product.nameLong || 'AI Coder';
+	const appDir = path.join(root, '.build', 'electron');
+	const oldAppPath = path.join(appDir, 'Code - OSS.app');
+	const newAppPath = path.join(appDir, `${appName}.app`);
+	const oldExecPath = path.join(newAppPath, 'Contents', 'MacOS', 'Electron');
+	const newExecPath = path.join(newAppPath, 'Contents', 'MacOS', appName);
+	const plistPath = path.join(newAppPath, 'Contents', 'Info.plist');
+
+	// 1. rename .app folder
+	if (fs.existsSync(oldAppPath) && !fs.existsSync(newAppPath)) {
+		fs.renameSync(oldAppPath, newAppPath);
+		console.log(` rename .app folder to: ${appName}.app`);
+	}
+
+	// 2. rename executable file
+	if (fs.existsSync(oldExecPath) && !fs.existsSync(newExecPath)) {
+		fs.renameSync(oldExecPath, newExecPath);
+		console.log(` rename executable file to: ${appName}`);
+	}
+
+	// 3. modify Info.plist
+	if (fs.existsSync(plistPath)) {
+		const info = fs.readFileSync(plistPath, 'utf8');
+		const obj = plist.parse(info);
+
+		// replace main fields
+		obj.CFBundleName = appName;
+		obj.CFBundleDisplayName = appName;
+		obj.CFBundleExecutable = appName;
+		obj.CFBundleIdentifier = `com.aicoder.${appName.replace(/\s+/g, '').toLowerCase()}`;
+		obj.CFBundleURLName = appName;
+		if (obj.CFBundleIconFile) {
+			obj.CFBundleIconFile = `${appName}.icns`;
+		}
+
+		// replace all VSCode/Code - OSS/VS Code
+		const plistStr = plist.build(obj)
+			.replace(/Code - OSS/g, appName)
+			.replace(/code-oss/g, appName.replace(/\s+/g, '-').toLowerCase())
+			.replace(/VS Code/g, appName);
+
+		fs.writeFileSync(plistPath, plistStr, 'utf8');
+		console.log('auto replace Info.plist brand name');
+	}
+
+	done();
+});
+
+gulp.task('brand-darwin-helpers', async function brandDarwinHelpersTask(done) {
+	const appName = product.nameLong || 'AI Coder';
+	const appDir = path.join(root, '.build', 'electron', `${appName}.app`);
+	const frameworksDir = path.join(appDir, 'Contents', 'Frameworks');
+	const helpers = [
+		'Helper',
+		'Helper (Renderer)',
+		'Helper (Plugin)',
+		'Helper (GPU)'
+	];
+	helpers.forEach(helperType => {
+		const oldApp = `Code - OSS ${helperType}.app`;
+		const newApp = `${appName} ${helperType}.app`;
+		const oldAppPath = path.join(frameworksDir, oldApp);
+		const newAppPath = path.join(frameworksDir, newApp);
+
+		// 1. rename Helper .app directory
+		if (fs.existsSync(oldAppPath) && !fs.existsSync(newAppPath)) {
+			fs.renameSync(oldAppPath, newAppPath);
+			console.log(`rename Helper directory: ${oldApp} -> ${newApp}`);
+		}
+
+		// 2. rename Helper executable file
+		const oldExec = path.join(newAppPath, 'Contents', 'MacOS', `Code - OSS ${helperType}`);
+		const newExec = path.join(newAppPath, 'Contents', 'MacOS', `${appName} ${helperType}`);
+		if (fs.existsSync(oldExec) && !fs.existsSync(newExec)) {
+			fs.renameSync(oldExec, newExec);
+			console.log(`rename Helper executable file: ${oldExec} -> ${newExec}`);
+		}
+
+		// 3. modify Helper Info.plist
+		const plistPath = path.join(newAppPath, 'Contents', 'Info.plist');
+		if (fs.existsSync(plistPath)) {
+			const info = fs.readFileSync(plistPath, 'utf8');
+			const obj = plist.parse(info);
+
+			obj.CFBundleName = `${appName} ${helperType}`;
+			obj.CFBundleDisplayName = `${appName} ${helperType}`;
+			obj.CFBundleExecutable = `${appName} ${helperType}`;
+			obj.CFBundleIdentifier = `com.aicoder.${appName.replace(/\\s+/g, '').toLowerCase()}.${helperType.replace(/[^a-zA-Z]/g, '').toLowerCase()}`;
+
+			const plistStr = plist.build(obj)
+				.replace(/Code - OSS/g, appName)
+				.replace(/code-oss/g, appName.replace(/\\s+/g, '-').toLowerCase())
+				.replace(/VS Code/g, appName);
+
+			fs.writeFileSync(plistPath, plistStr, 'utf8');
+			console.log(`auto replace Helper Info.plist brand name: ${plistPath}`);
+		}
+	});
+	done();
+});
