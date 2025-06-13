@@ -15,6 +15,8 @@ import { Chat, Message, SelectedTextMessageValue } from '../types/chats';
 import { db, getMessagesFromDB, saveMessageToDB } from '../utils/db';
 import { RateLimitedQueue } from '../utils/RateLimitedQueue';
 import { mergeArrays } from '../utils/util';
+import { ErrorMessage } from '../types/error';
+import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 
 interface UseMessagesProps {
 	currentChat: Chat | null;
@@ -57,6 +59,7 @@ export const useMessages = ({
 } => {
 	const { vscode } = useVSCode();
 	const { onTokenExpired } = useAuth();
+	const { setError: setGlobalError } = useErrorHandler();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -374,6 +377,9 @@ export const useMessages = ({
 							} else {
 								// Error sending message
 							}
+						}
+						if (error instanceof Error && error.message === ErrorMessage.NEED_INVITE_CODE) {
+							setGlobalError(ErrorMessage.NEED_INVITE_CODE);
 						}
 					} finally {
 						setAbortController(null);

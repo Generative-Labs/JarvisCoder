@@ -7,7 +7,6 @@ import React, { useState, useEffect, useRef, useCallback, Profiler, useMemo } fr
 
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
-// import './chat.css';
 import 'remixicon/fonts/remixicon.css';
 import { RiArrowUpLine, RiStopFill } from '@remixicon/react';
 import { debounce } from 'lodash';
@@ -28,9 +27,11 @@ import { useMessages } from './hooks/useMessages';
 import { EventMessage, EventResponseMessage } from './providers/chatEventMessage';
 import { TokenInfo, UserInfo } from './types/auth';
 import { Chat, SelectedTextMessage, SelectedTextMessageValue } from './types/chats';
-import { logger } from './utils/logger';
+import { ErrorMessage } from './types/error';
 import { RateLimitedQueue } from './utils/RateLimitedQueue';
 import { tokenManager } from './utils/tokenManager';
+import ErrorHandler from './components/chat/ErrorHandler';
+import { useErrorHandler, ErrorHandlerProvider } from './contexts/ErrorHandlerContext';
 
 export interface VSCodeAPI {
 	postMessage(message: {
@@ -72,11 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		createRoot(rootElement).render(
 			<Profiler id="chat" onRender={onRenderCallback}>
 				<VSCodeProvider vscode={vscode}>
-					<AuthProvider>
-						<ThemeProvider>
-							<ChatApp />
-						</ThemeProvider>
-					</AuthProvider>
+					<ErrorHandlerProvider>
+						<AuthProvider>
+							<ThemeProvider>
+								<ChatApp />
+							</ThemeProvider>
+						</AuthProvider>
+					</ErrorHandlerProvider>
 				</VSCodeProvider>
 			</Profiler>,
 		);
@@ -116,6 +119,7 @@ const ChatApp: React.FC = () => {
 		noWorkspaceChats,
 		setNoWorkspaceChats,
 	} = useChats();
+	const { error: chatError, setError } = useErrorHandler();
 	const { setThemeInfo } = useTheme();
 
 	const resetForm = useCallback(() => {
@@ -225,6 +229,11 @@ const ChatApp: React.FC = () => {
 						tokenManager.clearTokens();
 						return;
 					}
+					if (userInfo.business_code === ErrorMessage.NEED_INVITE_CODE) {
+						setError(ErrorMessage.NEED_INVITE_CODE);
+					} else {
+						setError(null);
+					}
 					setUserInfo(userInfo);
 					tokenManager.setTokenInfo(tokenInfo.token, tokenInfo.refreshToken, tokenInfo.expiresAt);
 					setTokenInfo(tokenInfo);
@@ -238,7 +247,6 @@ const ChatApp: React.FC = () => {
 				case EventResponseMessage.CODE_CONTEXT_SELECTION: {
 					const selectedTextMessage = message as SelectedTextMessage;
 					if (selectedTextMessage.command === 'extension.selectToChat') {
-						logger.debug(`selectedTextMessage.value${selectedTextMessage.value}`);
 						setSelectionCodes(selectedTextMessage.value);
 						if (textareaRef.current) {
 							textareaRef.current.focus();
@@ -411,6 +419,8 @@ const ChatApp: React.FC = () => {
 
 			{showHomePage && <ChatWelcomeContent />}
 
+			{chatError && chatError === ErrorMessage.NEED_INVITE_CODE && <ErrorHandler />}
+
 			<div
 				className={`self-stretch p-4 bg-ai-bg-01 inline-flex flex-col justify-start items-end gap-3 pt-0 ${
 					showHomePage ? 'mt-8' : ''
@@ -420,6 +430,7 @@ const ChatApp: React.FC = () => {
 					<SelectionCodes selectionCodes={selectionCodes} onRemoveCode={handleRemoveCode} />
 					<div className="text-center justify-start text-ai-gray-05 text-body font-regular font-inter w-full ">
 						<textarea
+							disabled={!!chatError}
 							ref={textareaRef}
 							value={inputValue}
 							onChange={handleInputChange}
@@ -444,7 +455,7 @@ const ChatApp: React.FC = () => {
 							</button>
 						) : (
 							<button
-								disabled={!!errorMessage || !inputValue.trim()}
+								disabled={!!errorMessage || !inputValue.trim() || !!chatError}
 								onClick={() => {
 									if (!currentChat || !inputValue.trim()) {
 										return;

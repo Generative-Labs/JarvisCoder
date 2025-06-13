@@ -23,6 +23,7 @@ interface AuthContextType {
 	tokenInfo: TokenInfo | null;
 	setTokenInfo: (tokenInfo: TokenInfo | null) => void;
 	onUpdateTokenInfo: (tokenInfo: TokenInfo) => void;
+	handleLogout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,6 +41,12 @@ export const AuthProvider: React.FC<{
 		setIsAuthenticated(false);
 		tokenManager.clearTokens().catch((err) => logger.error('Error clearing tokens:', err));
 		vscode.postMessage({ type: EventMessage.REFRESH_TOKEN_EXPIRED });
+	}, [vscode]);
+
+	const handleLogout = useCallback(() => {
+		setIsAuthenticated(false);
+		tokenManager.clearTokens().catch((err) => logger.error('Error clearing tokens:', err));
+		vscode.postMessage({ type: EventMessage.LOGOUT });
 	}, [vscode]);
 
 	const onUpdateTokenInfo = useCallback(
@@ -121,6 +128,7 @@ export const AuthProvider: React.FC<{
 				tokenInfo,
 				setTokenInfo,
 				onUpdateTokenInfo,
+				handleLogout,
 			}}
 		>
 			{children}

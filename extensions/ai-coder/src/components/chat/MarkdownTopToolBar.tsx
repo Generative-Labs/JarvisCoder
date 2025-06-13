@@ -76,7 +76,7 @@ export const RenderTopToolbar = React.memo(
 			const path = attributes?.path || '';
 			if (kind && kind !== 'write') {
 				return (
-					<div className="px-1 py-0.5 rounded inline-flex justify-center items-center gap-2.5">
+					<div className="px-1.5 py-[3px] rounded inline-flex justify-center items-center gap-2.5">
 						<RiTerminalLine size={16} className="text-ai-gray-01" />
 						<div className="justify-start text-ai-gray-01 text-caption1 font-regular font-inter leading-[16px]">
 							{kind || 'Run this command'}
@@ -89,7 +89,7 @@ export const RenderTopToolbar = React.memo(
 					<div className="flex justify-between items-center w-full">
 						<div className="inline-flex justify-start items-center gap-1.5">
 							<RiFileCodeLine size={16} className="text-ai-gray-01" />
-							<div className="px-1 py-0.5 bg-success-bg rounded inline-flex justify-center items-center gap-2.5">
+							<div className="px-1.5 py-[3px] bg-success-bg rounded inline-flex justify-center items-center gap-2.5">
 								<div className="justify-start text-white text-caption1 font-medium font-inter leading-[16px]">
 									{path ? path : 'Untitled-1'}
 								</div>
@@ -121,7 +121,7 @@ export const RenderTopToolbar = React.memo(
 					{lang && terminalLanguages.includes(lang.toLowerCase()) && (
 						<button
 							className=" p-0 bg-transparent hover:bg-transparent rounded inline-flex justify-center items-center gap-2.5  hover:text-ai-gray-01  text-caption1 font-regular font-inter
-				text-ai-gray-05 
+				text-ai-gray-05
 				"
 							onClick={() => handleOpenInTerminal && handleOpenInTerminal(innerContent)}
 							title="Run in terminal"
@@ -133,7 +133,7 @@ export const RenderTopToolbar = React.memo(
 						<div className="flex items-center gap-3 ml-auto">
 							<button
 								className="hover:opacity-70 text-ai-gray-01 bg-ai-bg-02 hover:text-ai-gray-01 text-caption1 font-regular font-inter
-				px-1 py-0.5 rounded inline-flex justify-center items-center gap-2.5
+				px-1.5 py-[3px] rounded inline-flex justify-center items-center gap-2.5
 				"
 								onClick={() => handleOpenDiff && handleOpenDiff(attributes?.path || '', innerContent)}
 							>
@@ -142,7 +142,7 @@ export const RenderTopToolbar = React.memo(
 
 							<button
 								className="hover:opacity-70 text-ai-gray-01 bg-ai-bg-02 hover:text-ai-gray-01 text-caption1 font-regular font-inter
-				px-1 py-0.5 rounded inline-flex justify-center items-center gap-2.5
+				px-1.5 py-[3px] rounded inline-flex justify-center items-center gap-2.5
 				"
 								onClick={() => handleAccept && handleAccept(attributes?.path || '', innerContent)}
 							>
