@@ -6,12 +6,12 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useAuth } from '../contexts/AuthContext';
+import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 import { useVSCode } from '../contexts/VSCodeContext';
 import { EventMessage } from '../providers/chatEventMessage';
 import { openChatAction } from '../services/apiServices';
 import { Chat } from '../types/chats';
 import { ErrorMessage } from '../types/error';
-import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 
 export const useChats = (): {
 	chats: Chat[] | null;
@@ -36,7 +36,7 @@ export const useChats = (): {
 
 	const handleUpdateChatTitle = useCallback(
 		(title: string): void => {
-			if (!currentChat) {
+			if (!currentChat || currentChat.title) {
 				return;
 			}
 

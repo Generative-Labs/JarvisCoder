@@ -48,7 +48,7 @@ export async function fetchWithToken(
 	// if return 401, maybe token is expired, try refresh once
 	if (response.status === 401) {
 		// Only try to refresh if we're not using provided token info
-		if (!tokenInfo) {
+		if (!token) {
 			// hard refresh token
 			const newToken = await tokenManager.refreshTokenIfNeeded(undefined, true);
 

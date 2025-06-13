@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import React, { useState, useEffect, useRef, useCallback, Profiler, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
 import { createRoot } from 'react-dom/client';
 import './styles/globals.css';
@@ -62,26 +62,20 @@ try {
 	};
 }
 
-function onRenderCallback(id: string, phase: string, actualDuration: number): void {
-	console.log(`Profiler [${id}] - ${phase} - ${actualDuration} ms`);
-}
-
 // Ensure React app is rendered after DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
 	const rootElement = document.getElementById('root');
 	if (rootElement) {
 		createRoot(rootElement).render(
-			<Profiler id="chat" onRender={onRenderCallback}>
-				<VSCodeProvider vscode={vscode}>
-					<ErrorHandlerProvider>
-						<AuthProvider>
-							<ThemeProvider>
-								<ChatApp />
-							</ThemeProvider>
-						</AuthProvider>
-					</ErrorHandlerProvider>
-				</VSCodeProvider>
-			</Profiler>,
+			<VSCodeProvider vscode={vscode}>
+				<ErrorHandlerProvider>
+					<AuthProvider>
+						<ThemeProvider>
+							<ChatApp />
+						</ThemeProvider>
+					</AuthProvider>
+				</ErrorHandlerProvider>
+			</VSCodeProvider>,
 		);
 		console.log('React app rendered to DOM');
 	} else {

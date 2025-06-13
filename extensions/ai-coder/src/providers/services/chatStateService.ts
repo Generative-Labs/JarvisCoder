@@ -115,6 +115,7 @@ export class ChatStateService {
 		}
 		chatMap[path] = chatMap[path].map((c) => (c.sessionId === sessionId ? { ...c, title } : c));
 		await this.saveChats(chatMap);
+		await this.setActiveChat(path, sessionId);
 	}
 
 	public async clearAllStorage(): Promise<void> {

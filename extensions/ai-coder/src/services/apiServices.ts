@@ -92,7 +92,7 @@ export async function sendMessageAction(
 		model_name: string;
 		code_context?: string[];
 	},
-	onMessage: (response: MessageResponse) => void,
+	onMessage: (response: MessageResponse, session_id: string) => void,
 	signal?: AbortSignal,
 ): Promise<void> {
 	let retryCount = 0;
@@ -123,7 +123,7 @@ export async function sendMessageAction(
 						type: 'normal',
 						timestamp: Date.now(),
 					},
-				});
+				}, payload.session_id);
 				return;
 			}
 
@@ -136,7 +136,7 @@ export async function sendMessageAction(
 				if (done) {
 					onMessage({
 						type: 'done',
-					});
+					}, payload.session_id);
 					break;
 				}
 
@@ -157,7 +157,7 @@ export async function sendMessageAction(
 									type: 'normal',
 									timestamp: Date.now(),
 								},
-							});
+							}, payload.session_id);
 						} catch (_e) {
 							const parsed = dataStr.trim().substring(11, dataStr.length - 1);
 							onMessage({
@@ -168,7 +168,7 @@ export async function sendMessageAction(
 									type: 'normal',
 									timestamp: Date.now(),
 								},
-							});
+							}, payload.session_id);
 						}
 					}
 				}
@@ -182,7 +182,7 @@ export async function sendMessageAction(
 			if (error instanceof Error && error.name === 'AbortError') {
 				onMessage({
 					type: 'done',
-				});
+				}, payload.session_id);
 				return;
 			}
 			retryCount++;
@@ -191,7 +191,7 @@ export async function sendMessageAction(
 				onMessage({
 					type: 'error',
 					error: `connection error, retrying (${retryCount + 1}/${maxRetries})`,
-				});
+				}, payload.session_id);
 				// wait and retry
 				await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
 			} else {
@@ -203,7 +203,7 @@ export async function sendMessageAction(
 						type: 'normal',
 						timestamp: Date.now(),
 					},
-				});
+				}, payload.session_id);
 				return;
 			}
 		}
