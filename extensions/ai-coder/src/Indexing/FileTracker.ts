@@ -8,7 +8,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { minimatch } from 'minimatch';
-
 import * as vscode from 'vscode';
 
 import { SOURCE_FILE_PATTERNS, EXCLUDED_DIRECTORIES } from './filePatterns';

@@ -14,13 +14,13 @@ type AllChatsContentProps = {
 
 const AllChatsContent: React.FC<AllChatsContentProps> = React.memo(
 	({ noWorkspaceChats, handleOpenChat }) => (
-		<div className="self-stretch inline-flex flex-col justify-start items-start gap-2 px-4">
+		<div className="self-stretch inline-flex flex-col justify-start items-start gap-2 px-4 overflow-y-auto no-scrollbar pb-4">
 			<div className="self-stretch inline-flex justify-between items-center">
 				<div className="justify-start text-ai-gray-05 text-caption1 font-regular font-inter">
 					All Conversations
 				</div>
 				<div className="justify-start text-ai-gray-05 text-caption1 font-regular font-inter">
-					View All
+					{/* View All */}
 				</div>
 			</div>
 			{noWorkspaceChats?.map((chat) => (

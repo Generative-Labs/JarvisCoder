@@ -8,15 +8,15 @@ import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
 import { debounce } from 'lodash';
 
 import { useAuth } from '../contexts/AuthContext';
+import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 import { useVSCode } from '../contexts/VSCodeContext';
 import { EventMessage } from '../providers/chatEventMessage';
 import { MessageResponse, sendMessageAction } from '../services/apiServices';
 import { Chat, Message, SelectedTextMessageValue } from '../types/chats';
+import { ErrorMessage } from '../types/error';
 import { db, getMessagesFromDB, saveMessageToDB } from '../utils/db';
 import { RateLimitedQueue } from '../utils/RateLimitedQueue';
 import { mergeArrays } from '../utils/util';
-import { ErrorMessage } from '../types/error';
-import { useErrorHandler } from '../contexts/ErrorHandlerContext';
 
 interface UseMessagesProps {
 	currentChat: Chat | null;
@@ -48,7 +48,7 @@ export const useMessages = ({
 	pushNewMessage: (message: Message) => Promise<void>;
 	resetMessages: () => void;
 	setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
-	handleReceiveMessage: (response: MessageResponse) => Promise<void>;
+	handleReceiveMessage: (response: MessageResponse, session_id: string) => Promise<void>;
 	handleStopGeneration: () => void;
 	handleSendMessage: (inputValue: string, selectionCodes: SelectedTextMessageValue[]) => void;
 	isTyping: 'default' | 'typing' | 'done';
@@ -176,7 +176,7 @@ export const useMessages = ({
 	]);
 
 	const handleReceiveMessage = useCallback(
-		async (response: MessageResponse): Promise<void> => {
+		async (response: MessageResponse, session_id: string): Promise<void> => {
 			const shouldScroll = isAtBottom();
 			if (response.type === 'message') {
 				setErrorMessage('');
@@ -186,6 +186,7 @@ export const useMessages = ({
 							return {
 								...prev,
 								text: `${prev.text}${response?.data?.text || ''}`,
+								session_id,
 							};
 						}
 						return {
@@ -193,6 +194,7 @@ export const useMessages = ({
 							isUser: false,
 							type: 'normal' as const,
 							timestamp: response?.data?.timestamp,
+							session_id,
 						};
 					});
 				}
@@ -233,7 +235,7 @@ export const useMessages = ({
 
 	useEffect(() => {
 		const saveMessages = async (): Promise<void> => {
-			if (lastMessage && isTyping === 'done') {
+			if (lastMessage && isTyping === 'done' && lastMessage?.session_id === currentChat?.sessionId) {
 				setIsThinking(false);
 				await pushNewMessage(lastMessage);
 				setLastMessage(null);
@@ -267,8 +269,8 @@ export const useMessages = ({
 	}, [lastMessage, isTyping]);
 
 	const handleReceiveMessageQueued = useCallback(
-		(response: MessageResponse): void => {
-			queue.enqueue(() => handleReceiveMessage(response));
+		(response: MessageResponse, session_id: string): void => {
+			queue.enqueue(() => handleReceiveMessage(response, session_id));
 		},
 		[handleReceiveMessage, queue],
 	);
@@ -288,6 +290,9 @@ export const useMessages = ({
 		isAtBottom,
 	});
 
+	useEffect(() => {
+		handleStopGeneration();
+	}, [currentChat?.sessionId]);
 	// Update ref when dependencies change
 	useEffect(() => {
 		messageStateRef.current = {

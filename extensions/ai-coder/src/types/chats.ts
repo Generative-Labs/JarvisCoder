@@ -21,6 +21,7 @@ export interface Message {
 	type?: 'normal' | 'selection' | 'terminal'; // Add message type
 	timestamp?: number;
 	selectionCodes?: SelectedTextMessageValue[];
+	session_id?: string;
 }
 
 export interface ChatUpdateError {

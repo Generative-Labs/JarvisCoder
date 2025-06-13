@@ -109,6 +109,7 @@ export const AuthProvider: React.FC<{
 			}
 		};
 
+		check();
 		intervalId = setInterval(check, TOKEN_EXPIRATION_CHECK_INTERVAL);
 
 		return () => {

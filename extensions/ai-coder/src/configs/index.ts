@@ -38,5 +38,5 @@ const envConfigs: Record<string, Config> = {
 	},
 };
 
-const env = 'development'; // Change this to the desired environment
+export const env = 'development'; // Change this to the desired environment
 export const { API_BASE_URL, AUTH_URL, CLIENT_ID, BASE64_KEY } = envConfigs[env];
